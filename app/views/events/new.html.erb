@@ -1,0 +1,7 @@
+<h1>イベント登録</h1>
+
+<%= form_for @event do |f| -%>
+  説明: <%= f.text_field :description %><br />
+  テーブル数: <%= f.text_field :groupsize %>
+  <%= f.submit "登録" %>
+<% end -%>

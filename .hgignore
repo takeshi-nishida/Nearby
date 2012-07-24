@@ -1,0 +1,13 @@
+\.orig$
+\.orig\..*$
+\.chg\..*$
+\.rej$
+\.conflict\~$
+
+syntax: glob
+.DS_Store
+db/*.sqlite3
+log/*
+tmp/*
+nbproject/*
+public/system/*

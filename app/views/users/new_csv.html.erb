@@ -1,0 +1,10 @@
+<h1>ユーザ一括登録</h1>
+
+<%= form_tag import_csv_users_path, multipart: true do -%>
+  CSVファイル <%= file_field_tag "csv", accept: "csv" %>
+  <%= submit_tag "送信" %>
+<% end -%>
+
+<% @users.each{|user| %>
+  <%=  user.name %>
+<% } %>

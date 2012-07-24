@@ -1,0 +1,37 @@
+<div>
+</div>
+
+<h1>席決めシステム（仮）</h1>
+
+<% if current_user %>
+  <h2>希望を登録する</h2>
+  <%= form_tag want_events_path do -%>
+    <%= collection_select :want, :who_id, @users, :id, :name, selected: current_user.id %>さんが
+    <%= collection_select :want, :wantable_id, @users, :id, :name %>さんと
+    <%= submit_tag "近くの席になれたらいいな" %>
+  <% end -%>
+  ※自分が含まれていない希望も登録できます。 
+    <h2>あなたが登録した希望</h2>
+    <ul>
+    <% current_user.wants.each{|want| -%>
+      <li><%= want.who.name %> さんが　<%= want.wantable.name if want.wantable %> さんと近くの席になれたらいいな</li>
+    <% } -%>
+    </ul>
+<% else -%>
+    希望を登録するにはログインしてください。
+    <%= form_tag login_path do -%>
+      名前: <%= select_tag :user_id, options_from_collection_for_select(@users, :id, :name), include_blank: true %>
+      パスワード: <%= password_field_tag :password %>
+      <%= submit_tag "ログイン" %>
+    <% end -%>
+<% end -%>
+
+<h2>イベント一覧</h2>
+<% @events.each{|e| -%>
+  <%= link_to e.description, event_path(e)  %>
+<% } -%>
+
+<h2>管理者用</h2>
+<%= link_to "イベント登録", new_event_path %>
+<%= link_to "ユーザ登録", new_user_url %>
+<%=link_to "ユーザ一括登録(CSV)", new_csv_users_path %>

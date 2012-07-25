@@ -1,7 +1,7 @@
 <div>
 </div>
 
-<h1>席決めシステム（仮）</h1>
+<h1>席決めシステム</h1>
 
 <% if current_user %>
   <h2>希望を登録する</h2>
@@ -31,7 +31,7 @@
   <%= link_to e.description, event_path(e)  %>
 <% } -%>
 
-<h2>管理者用</h2>
+<h2>管理者向け機能</h2>
 <%= link_to "イベント登録", new_event_path %>
 <%= link_to "ユーザ登録", new_user_url %>
 <%=link_to "ユーザ一括登録(CSV)", new_csv_users_path %>

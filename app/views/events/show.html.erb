@@ -1,12 +1,12 @@
 <h1><%= @event.description %></h1>
 
-<%= @users.size %> 人を <%=  @event.groupsize %> テーブルに分割した結果
+<%= @users.size %> 人を <%=  @event.groupsize %> テーブルに分割した結果 (score: <%= @score %>)
 
-<%#*<h2>Satisfied</h2>%>
-<%#= @satisfied.map{|w| "#{w.who.name} & #{w.wantable.name}"}.join(" / ") %>
+<h2>Satisfied</h2>
+<%= @satisfied.map{|w| "#{w.who.name} & #{w.wantable.name}"}.join(" / ") %>
 
-<%#*<h2>Unsatisfied</h2>%>
-<%#= @unsatisfied.map{|w| "#{w.who.name} & #{w.wantable.name}"}.join(" / ") %>
+<h2>Unsatisfied</h2>
+<%= @unsatisfied.map{|w| "#{w.who.name} & #{w.wantable.name}"}.join(" / ") %>
 
 <h2>テーブル</h2>
 <ul>

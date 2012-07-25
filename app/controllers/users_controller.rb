@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-#  http_basic_authenticate_with :name => 'tnishida', :pass => '3594t', :only => [:index, :show, :new, :new_csv]
+  http_basic_authenticate_with :name => 'tnishida', :password => '3594t', :only => [:index, :show, :new, :new_csv]
 
   def show
     @user = User.find(params[:id])

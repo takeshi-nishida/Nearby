@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-#  http_basic_authenticate_with :name => "tnishida", :pass => "3594t", :only => [:show, :new]
+  http_basic_authenticate_with :name => "tnishida", :password => "3594t", :only => [:show, :new]
 
   before_filter :current_user, only: [:want]
   
@@ -15,47 +15,41 @@ class EventsController < ApplicationController
     @wants = Want.find(:all)
 
     # 席を決める
-
-    # 1. まずは適当に割り振る
+    # まずは適当に割り振る TODO: 適当にシャッフルする
     @n = @event.groupsize #(@users.size.to_f / @event.groupsize).ceil
-    best = h = Hash.new
+    h = Hash.new
     @users.each_with_index{|u, i| h[u] = i % @n }
-    
     @satisfied, @unsatisfied = @wants.partition{|w| h[w.who] == h[w.wantable] }
     
-    @unsatisfied.each{|w|
-      # 2. 希望に従って入れ替える
-      if h[w.who] != h[w.wantable]
-        us1 = h.select{|u, table| table == h[w.who] && u != w.who }.map{|u, _| u }
-        us2 = h.select{|u, table| table == h[w.wantable] && u != w.wantable }.map{|u, _| u }
-        
-        if wantedcount(w.who, us1) > wantedcount(w.wantable, us2)
-          swap(h, w.wantable, us1.min{|u| wantedcount(u, us1) })
-        else
-          swap(h, w.who, us2.min{|u| wantedcount(u, us2) })
+    until @unsatisfied.empty?
+      best, max, improved = h, total_priority(@satisfied), false
+
+      @unsatisfied.sort{|w1, w2| w1.priority <=> w2.priority }.each{|w|
+        # 希望に従って入れ替える
+        if h[w.who] != h[w.wantable]
+          us1 = h.select{|u, table| table == h[w.who] && u != w.who }.map{|u, _| u }
+          us2 = h.select{|u, table| table == h[w.wantable] && u != w.wantable }.map{|u, _| u }
+          
+          if wantedscore(w.who, us1) > wantedscore(w.wantable, us2) # 元の部屋にそのままいる方が良い方を残す
+            swap(h, w.wantable, us1.min{|u| wantedscore(u, us1) })
+          else
+            swap(h, w.who, us2.min{|u| wantedscore(u, us2) })
+          end
         end
+        
+        # 入れ替え結果を評価する
+        score = total_priority(@wants.select{|w| h[w.who] == h[w.wantable] })
+        best, max, improved = h.clone, score, true if score > max
+      }
 
-#        u1, _ = h.find{|u, table| table == h[w.who] &&  !wanted_together(w.who, u) } # w.who と同じテーブルにいて、共に希望されていない人はswap可能
-#        if u
-#          swap(h, w.wantable, u)
-#        else
-#          u, _ = h.find{|u, table| table == h[w.wantable] &&  !wanted_together(w.wantable, u) } # w.wantable と同じテーブルにいて、共に希望されていない人はswap可能
-#          swap(h, w.who, u) if u
-#        end
-      end
-
-      # 3. 入れ替え後の割り振りで満たされていない希望を調べる
-      # sat, unsat = @wants.partition{|w| h[w.who] == h[w.wantable] }
-
-      # 4. 入れ替え後の希望適合度が入れ替え前より高ければ、記録する
-      # if sat.length > @satisfied.length
-      # best = h.clone
-      # end
-    }
+      @satisfied, @unsatisfied = @wants.partition{|w| best[w.who] == best[w.wantable] }
+      h = best
+      break unless improved # 改善が見られなかったら、全ての希望を満たしていなくても探索終了
+    end
     
-    # TODO: 2周目に突入する
-    @satisfied, @unsatisfied = @wants.partition{|w| h[w.who] == h[w.wantable] }
-    @h = h.group_by{|user, table| table }
+    @score = @satisfied.inject(0){|result, w| result + w.priority }    
+    @h = best.group_by{|user, table| table }
+    # TODO: DBに記録する
   end
 
   def new
@@ -84,12 +78,18 @@ class EventsController < ApplicationController
   
   protected
   
-  def wantedcount(user, users)
-    users.count{|u| wanted_together(u, user) }
+  def total_priority(wants)
+    wants.inject(0){|sum, w| sum + w.priority }
   end
   
-  def wanted_together(u1, u2)
-    Want.where(who_id: u1.id, wantable_id: u2.id).exists? || Want.where(who_id: u2.id, wantable_id: u1.id).exists?
+  def wantedscore(user, users)
+    users.inject(0){|result, u| result + pair_priority(u, user) }
+  end
+  
+  def pair_priority(u1, u2)
+    wants = Want.where(who_id: u1.id, wantable_id: u2.id) + Want.where(who_id: u2.id, wantable_id: u1.id)
+    total_priority(wants)
+    # might better cache the score
   end
   
   def swap(h, u1, u2)

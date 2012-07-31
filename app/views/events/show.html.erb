@@ -1,6 +1,6 @@
 <h1><%= @event.description %></h1>
 
-<%= @users.size %> 人を <%=  @event.groupsize %> テーブルに分割した結果 (score: <%= @score %>)
+<%= @users.size %> 人を <%=  @event.groupsize %> テーブルに分割した結果
 
 <h2>Satisfied</h2>
 <%= @satisfied.map{|w| "#{w.who.name} & #{w.wantable.name}"}.join(" / ") %>
@@ -10,7 +10,7 @@
 
 <h2>テーブル</h2>
 <ul>
-<% @h.each{|k, us| %>
-  <li>テーブル<%= k %> / <%= us.size %> 人 / <%= us.map{|u, _| u.name }.join(", ") %></li>
+<% @event.tables.each{|table| %>
+  <li>テーブル<%= table.id %> / <%= table.users.size %> 人 / <%= table.users.map{|u, _| u.name }.join(", ") %></li>
 <% } %>
 </ul>

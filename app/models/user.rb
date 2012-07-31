@@ -5,4 +5,7 @@ class User < ActiveRecord::Base
   
   has_many :wants
   has_many :wanted, as: :wantable
+
+  has_many :seatings
+  has_many :tables, :through => :seatings
 end

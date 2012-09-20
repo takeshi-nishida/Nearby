@@ -1,4 +1,6 @@
 Nearby::Application.routes.draw do
+  resources :topics
+
   resources :users do
     collection do
       get "new_csv"
@@ -9,6 +11,7 @@ Nearby::Application.routes.draw do
   resources :events do
     collection do
       post "want"
+      post "want_topic"
     end
   end
 

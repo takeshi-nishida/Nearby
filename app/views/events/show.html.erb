@@ -1,16 +1,22 @@
-<h1><%= @event.description %></h1>
+<h1><%= @event.description %>のテーブル割</h1>
 
-<%= @users.size %> 人を <%=  @event.groupsize %> テーブルに分割した結果
+<%#= @priorities.to_s %>
 
-<h2>Satisfied</h2>
-<%= @satisfied.map{|w| "#{w.who.name} & #{w.wantable.name}"}.join(" / ") %>
+<%#*<br />%>
 
-<h2>Unsatisfied</h2>
-<%= @unsatisfied.map{|w| "#{w.who.name} & #{w.wantable.name}"}.join(" / ") %>
+<%#*<h2>Satisfied</h2>%>
+<%#= @satisfied.map{|w| human_readable_want(w) }.join(" / ") %>
 
-<h2>テーブル</h2>
-<ul>
+<%#*<h2>Unsatisfied</h2>%>
+<%#= @unsatisfied.map{|w| human_readable_want(w) }.join(" / ") %>
+
 <% @event.tables.each{|table| %>
-  <li>テーブル<%= table.id %> / <%= table.users.size %> 人 / <%= table.users.map{|u, _| u.name }.join(", ") %></li>
+  <ul class="table">
+    <% unless table.popular_topics.empty? %>
+      <li><b><%= table.popular_topics.map{|t| t.description }.join(",") %></b></li>
+    <% end %>
+    <% table.users.each{|u| -%>
+    <li><%= u.name %></li>
+    <% } -%>
+  </ul>
 <% } %>
-</ul>

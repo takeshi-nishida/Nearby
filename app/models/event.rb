@@ -12,65 +12,71 @@ class Event < ActiveRecord::Base
   
   def forget_seating
     tables.clear
+    seatings.clear
   end
     
-  def plan_seating(users, wants)
+  def plan_seating(users, priorities)
     h = Hash.new
-    users.each_with_index{|u, i| h[u] = i % groupsize }
-    satisfied, unsatisfied = wants.partition{|w| h[w.who] == h[w.wantable] }
+    users.shuffle.each_with_index{|u, i| h[u.id] = i % groupsize }
+
+    pairs = priorities.sort{|a, b| b[1] <=> a[1] }.map{|pair, score| pair }
+    satisfied, unsatisfied = pairs.partition{|pair| sametable(h, pair[0], pair[1]) }
     
     until unsatisfied.empty?
-      best, max, improved = h, total_priority(satisfied), false
+      best, max, improved = h, total_priority(satisfied, priorities), false
 
-      unsatisfied.sort{|w1, w2| w1.priority <=> w2.priority }.each{|w|
+      unsatisfied.each{|pair|
         # 希望に従って入れ替える
-        if h[w.who] != h[w.wantable]
-          us1 = h.select{|u, table| table == h[w.who] && u != w.who }.map{|u, _| u }
-          us2 = h.select{|u, table| table == h[w.wantable] && u != w.wantable }.map{|u, _| u }
+        u1, u2 = pair[0], pair[1]
+        if not sametable(h, u1, u2)
+          users1 = h.select{|u, table| table == h[u1] && u != u1 }.map{|u, _| u } # u1 と同じテーブルの人々
+          users2 = h.select{|u, table| table == h[u2] && u != u2 }.map{|u, _| u } # u2 と同じテーブルの人々
           
-          if wantedscore(w.who, us1) > wantedscore(w.wantable, us2) # 元の部屋にそのままいる方が良い方を残す
-            swap(h, w.wantable, us1.min{|u| wantedscore(u, us1) })
+          if wantedscore(u1, users1, priorities) > wantedscore(u2, users2, priorities) # 元の部屋にそのままいる方が良い方を残す
+            swap(h, u2, users1.min{|u| wantedscore(u, users1, priorities) })
           else
-            swap(h, w.who, us2.min{|u| wantedscore(u, us2) })
+            swap(h, u1, users2.min{|u| wantedscore(u, users2, priorities) })
           end
         end
         
         # 入れ替え結果を評価する
-        score = total_priority(wants.select{|w| h[w.who] == h[w.wantable] })
+        score = total_priority(pairs.select{|pair| sametable(h, pair[0], pair[1])}, priorities)
         best, max, improved = h.clone, score, true if score > max
       }
 
-      satisfied, unsatisfied = wants.partition{|w| best[w.who] == best[w.wantable] }
+      satisfied, unsatisfied = pairs.partition{|pair| sametable(best, pair[0], pair[1]) }
       h = best
       break unless improved # 改善が見られなかったら、全ての希望を満たしていなくても探索終了
     end
 
     best.group_by{|user, table| table }.each{|t, us|
-      tables.create(users: us.map{|u, t| u})
+      tables.create(:user_ids => us.map{|u, t| u} )
     }
 
   end
   
   
   protected
+  
+  def sametable(h, u1, u2)
+    h[u1] == h[u2]
+  end
       
-  def total_priority(wants)
-    wants.inject(0){|sum, w| sum + w.priority }
+  def total_priority(pairs, priorities)
+    pairs.inject(0){|sum, pair| sum + priorities[pair] }
   end
   
-  def wantedscore(user, users)
-    users.inject(0){|result, u| result + pair_priority(u, user) }
+  def wantedscore(user, users, priorities)
+    users.inject(0){|result, u| result + priorities[[u, user].sort] }
   end
   
-  def pair_priority(u1, u2)
-    wants = Want.where(who_id: u1.id, wantable_id: u2.id) + Want.where(who_id: u2.id, wantable_id: u1.id)
-    total_priority(wants)
-    # might better cache the score
-  end
+#  def pair_priority(u1, u2)
+#    wants = Want.where(who_id: u1.id, wantable_id: u2.id) + Want.where(who_id: u2.id, wantable_id: u1.id)
+#    total_priority(wants)
+#    # might better cache the score
+#  end
 
   def swap(h, u1, u2)
-#    require "kconv"
-#    puts "#{u1.name.tosjis} <=> #{u2.name.tosjis}"
     temp = h[u1]
     h[u1] = h[u2]
     h[u2] = temp

@@ -1,20 +1,29 @@
-<div>
-</div>
-
-<h1>席決めシステム</h1>
 
 <% if current_user %>
   <h2>希望を登録する</h2>
+
+  <div class="wantform">
   <%= form_tag want_events_path do -%>
     <%= collection_select :want, :who_id, @users, :id, :name, selected: current_user.id %>さんが
     <%= collection_select :want, :wantable_id, @users, :id, :name %>さんと
     <%= submit_tag "近くの席になれたらいいな" %>
+    ※自分が含まれていない希望も登録できます。 
+    <%= select :want, :wantable_id, grouped_options_for_select(User.for_select), {}, id: "grouptest" %>
   <% end -%>
-  ※自分が含まれていない希望も登録できます。 
+  </div>
+
+  <div class="wantform">
+  <%= form_tag want_topic_events_path do -%>
+    <%= collection_select :want, :wantable_id, @topics, :id, :description %>
+    の<%= submit_tag "話がしたい" %>
+    <%= link_to "他の話題を提案する", new_topic_url %>
+  <% end %>
+  </div>
+  
     <h2>あなたが登録した希望</h2>
     <ul>
     <% current_user.wants.each{|want| -%>
-      <li><%= want.who.name %> さんが　<%= want.wantable.name if want.wantable %> さんと近くの席になれたらいいな</li>
+      <li><%= human_readable_want(want) %></li>
     <% } -%>
     </ul>
 <% else -%>
@@ -31,7 +40,8 @@
   <%= link_to e.description, event_path(e)  %>
 <% } -%>
 
-<h2>管理者向け機能</h2>
+<h2>管理者用</h2>
+
 <%= link_to "イベント登録", new_event_path %>
 <%= link_to "ユーザ登録", new_user_url %>
 <%=link_to "ユーザ一括登録(CSV)", new_csv_users_path %>

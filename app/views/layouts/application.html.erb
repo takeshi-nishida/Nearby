@@ -8,12 +8,11 @@
 </head>
 <body>
   <nav>
-    <%= link_to "トップ", root_url %>
+    <%= link_to "席決めシステム", root_url %>
     <% if current_user -%>
     ログイン中: <%= current_user.name %>
-    <%= link_to "ログアウト", logout_path %>
+    <%= link_to "ログアウトする", logout_path %>
   <% end %>  
-
   </nav>
 
 <%= yield %>

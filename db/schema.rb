@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(:version => 20120920060908) do
   add_index "tables", ["event_id"], :name => "index_tables_on_event_id"
 
   create_table "topics", :force => true do |t|
+    t.integer  "user_id"
     t.string   "description"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false

@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
   has_many :seatings
   has_many :tables, :through => :seatings
   
+  has_many :topics
+  
   def self.for_select
     all.map{|u| [u.name, u.id]  }.group_by { |u| u[0].length }
   end

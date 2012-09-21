@@ -31,7 +31,7 @@
     希望を登録するにはログインしてください。
     <%= form_tag login_path do -%>
       名前: <%#= select_tag :user_id, options_from_collection_for_select(@users, :id, :name_with_affiliation), include_blank: true %>
-      <%= select_tag :user_id, grouped_options_for_select(@grouped_users), include_blank: true, id: "select_user" %>
+      <%= select_tag :user_id, grouped_options_for_select(@grouped_users), prompt: "名前を選択してください", id: "select_user" %>
       パスワード: <%= password_field_tag :password %>
       <%= submit_tag "ログイン" %>
     <% end -%>

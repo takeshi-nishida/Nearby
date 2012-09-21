@@ -33,7 +33,9 @@ class UsersController < ApplicationController
       @user = User.new(
         name: row["name"],
         password: row["password"],
-        password_confirmation: row["password_confirmation"]
+        password_confirmation: row["password_confirmation"],
+        furigana: row["furigana"],
+        affiliation: row["affiliation"]
       )
       @user.save
     end

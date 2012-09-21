@@ -18,7 +18,7 @@ a.disabled {
 
 	a.sctble_display span {
 		display: block;
-		width: 5em;
+/*		width: 5em;*/
 		cursor: default;
 	}
 	
@@ -50,17 +50,17 @@ div.sctble_mat {
 	
 		div.sctble_mat dl dt {
 			float: left;
-			margin: 0 0 1em 0 !important;
+			margin: 0 0 5px 0 !important;
 			border: none !important;
-			padding: 0 !important;
-			width: 4.5em;
+			padding: 0 4px 0 0 !important;
+/*			width: 4.5em;*/
 			color: #333;
 			font-weight: bold;
 		}
 		
 		div.sctble_mat dl dd {
-			margin: 0 0 1em 4.5em !important;
-			border-left: solid #333 2px !important;
+			margin: 0 0 5px 4.5em !important;
+/*			border-left: solid #333 2px !important;*/
 			padding: 0 0 0 1.5em !important;
 		}
 

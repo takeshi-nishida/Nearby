@@ -4,11 +4,12 @@
 
   <div class="wantform">
   <%= form_tag want_events_path do -%>
-    <%= collection_select :want, :who_id, @users, :id, :name, selected: current_user.id %>さんが
-    <%= collection_select :want, :wantable_id, @users, :id, :name %>さんと
-    <%= submit_tag "近くの席になれたらいいな" %>
+    <%#= collection_select :want, :who_id, @users, :id, :name, selected: current_user.id %>
+    <%#= collection_select :want, :wantable_id, @users, :id, :name %>
+    <%= select :want, :who_id, grouped_options_for_select(@grouped_users, current_user.id), {}, id: "select_who" %> さんが
+    <%= select :want, :wantable_id, grouped_options_for_select(@grouped_users), {}, id: "select_wantable" %> さんと
+    <%= submit_tag "近くの席になれたらいいな" %><br/>
     ※自分が含まれていない希望も登録できます。 
-    <%= select :want, :wantable_id, grouped_options_for_select(User.for_select), {}, id: "grouptest" %>
   <% end -%>
   </div>
 
@@ -29,7 +30,8 @@
 <% else -%>
     希望を登録するにはログインしてください。
     <%= form_tag login_path do -%>
-      名前: <%= select_tag :user_id, options_from_collection_for_select(@users, :id, :name), include_blank: true %>
+      名前: <%#= select_tag :user_id, options_from_collection_for_select(@users, :id, :name_with_affiliation), include_blank: true %>
+      <%= select_tag :user_id, grouped_options_for_select(@grouped_users), include_blank: true, id: "select_user" %>
       パスワード: <%= password_field_tag :password %>
       <%= submit_tag "ログイン" %>
     <% end -%>

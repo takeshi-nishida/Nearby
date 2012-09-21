@@ -8,6 +8,7 @@ class EventsController < ApplicationController
     @users = User.find(:all)
     @topics = Topic.find(:all)
     @want = Want.new
+    @grouped_users = User.grouped_options_by_affiliation
   end
 
   def show

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120817030137) do
+ActiveRecord::Schema.define(:version => 20120920060908) do
 
   create_table "events", :force => true do |t|
     t.string   "description"
@@ -49,6 +49,8 @@ ActiveRecord::Schema.define(:version => 20120817030137) do
     t.string   "password_digest"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+    t.string   "affiliation"
+    t.string   "furigana"
   end
 
   create_table "wants", :force => true do |t|

@@ -3,6 +3,9 @@ class User < ActiveRecord::Base
   has_secure_password
   validates :password, presence: true, on: :create
   
+  scope :excluded, where(exclude: true)
+  scope :included, where(exclude: false)
+  
   has_many :wants
   has_many :wanted, as: :wantable
 

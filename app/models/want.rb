@@ -13,7 +13,8 @@ class Want < ActiveRecord::Base
   def priority
     user == who || user == wantable ? 2 : 1 # 本人による希望を2倍優先する
   end
-  
+
+  # [uid1, uid2] => priority for the two というハッシュを作成
   def self.priorities
     h = Hash.new(0)
     for_user.each{|w|

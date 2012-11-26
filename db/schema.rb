@@ -11,11 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120920060908) do
+ActiveRecord::Schema.define(:version => 20120925120754) do
 
   create_table "events", :force => true do |t|
     t.string   "description"
-    t.integer  "groupsize"
+    t.string   "style"
+    t.integer  "size1"
+    t.integer  "number1"
+    t.integer  "size2"
+    t.integer  "number2"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
@@ -48,10 +52,11 @@ ActiveRecord::Schema.define(:version => 20120920060908) do
   create_table "users", :force => true do |t|
     t.string   "name"
     t.string   "password_digest"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
     t.string   "affiliation"
     t.string   "furigana"
+    t.boolean  "exclude",         :default => false
   end
 
   create_table "wants", :force => true do |t|

@@ -1,15 +1,20 @@
-<h1><%= @event.description %>のテーブル割</h1>
+<h1><%= @event.description %>の席</h1>
+<%= event_details(@event) %>
 
 <%#= @priorities.to_s %>
 
-<%#*<br />%>
-
+<%# if @event.planned? then -%>
+<%#*<div>%>
 <%#*<h2>Satisfied</h2>%>
 <%#= @satisfied.map{|w| human_readable_want(w) }.join(" / ") %>
 
 <%#*<h2>Unsatisfied</h2>%>
 <%#= @unsatisfied.map{|w| human_readable_want(w) }.join(" / ") %>
+<%#*</div>%>
+<%# end %>
 
+<% case @event.style %>
+<% when "tables" %>
 <% @event.tables.each{|table| %>
   <ul class="table">
     <% unless table.popular_topics.empty? %>
@@ -20,3 +25,24 @@
     <% } -%>
   </ul>
 <% } %>
+
+<% when "rows" %>
+  <table>
+  <% tables_to_rows(@event).each{|users| -%>
+    <tr>
+      <% users.each{|u| %>
+      <td><%= u ? u.name : "[空席]" %></td>
+      <% } %>
+    </tr>
+  <% } -%>
+  </table>
+<% end %>
+
+<% unless @excluded_users.empty? %>
+  <h2>自由席の人</h2>
+  <p>
+  <% @excluded_users.each do |u| -%>
+  <%= u.name %>
+  <% end -%>  
+  </p>
+<% end -%>

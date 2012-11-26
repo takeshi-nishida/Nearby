@@ -9,12 +9,18 @@ Nearby::Application.routes.draw do
   end
 
   resources :events do
+    member do
+      post "plan"
+      post "forget"
+    end
     collection do
       post "want"
       post "want_topic"
+      post "update_exclude"
     end
   end
 
+  match "admin_index" => "events#admin_index", :as => :admin_index
   match "login" => "sessions#create", :as => :login
   match "logout" => "sessions#destroy", :as => :logout
 

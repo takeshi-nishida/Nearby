@@ -2,6 +2,7 @@
 <% if current_user %>
   <h2>希望を登録する</h2>
 
+  <% unless current_user.exclude %>
   <div class="wantform">
   <%= form_tag want_events_path do -%>
     <%#= collection_select :want, :who_id, @users, :id, :name, selected: current_user.id %>
@@ -18,11 +19,26 @@
     <%= collection_select :want, :wantable_id, @topics, :id, :description %>
     の<%= submit_tag "話がしたい" %>
     <%= link_to "他の話題を提案する", new_topic_url %>
+  <% end -%>
+  </div>
   <% end %>
+  
+  <div class="excludeform">
+    <%=  form_tag update_exclude_events_path do -%>
+      <%= check_box_tag :exclude, true, current_user.exclude %>
+      <%= label_tag(:exclude, "自分の席は自分で決めたい") %>
+      <%= submit_tag "更新" %>
+    <% end -%>
   </div>
   
     <h2>あなたが登録した希望</h2>
-    <ul>
+    <% if current_user.exclude %>
+    <p>※以下の希望通りに席を決めてほしい場合は「自分の席は自分で決めたい」を無効にしてください。</p>
+    <% end %>
+    <p><%= current_user.wants.count %>件の希望が登録されています
+      <button onclick="$('#wishlist').show()">希望の一覧を表示する</button>
+    </p>
+    <ul id="wishlist">
     <% current_user.wants.each{|want| -%>
       <li><%= human_readable_want(want) %></li>
     <% } -%>
@@ -42,8 +58,6 @@
   <%= link_to e.description, event_path(e)  %>
 <% } -%>
 
-<h2>管理者用</h2>
-
-<%= link_to "イベント登録", new_event_path %>
-<%= link_to "ユーザ登録", new_user_url %>
-<%=link_to "ユーザ一括登録(CSV)", new_csv_users_path %>
+<div class="footer">
+<%= link_to "管理者用", admin_index_path %>
+</div>

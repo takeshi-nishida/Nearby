@@ -15,6 +15,24 @@ div.wantform{
   padding: 8px;
 }
 
+div.excludeform{
+  width: 480px;
+//  border: 1px solid black;
+  border-radius: 8px;
+  background: #FF9999;
+  margin: 8px;
+  padding: 8px;
+}
+
+div.footer{
+  font-size: x-small;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px 0px 0px 0px;
+  margin-top: 40px;
+  padding-top: 10px;
+}
+
 ul.table{
   list-style-type: none;
   display: inline-block;
@@ -22,4 +40,9 @@ ul.table{
   background: #99CCFF;
   margin: 8px;
   padding: 8px;
+}
+
+table {
+  margin: 8px 8px 8px 8px;
+  border: 1px solid black;
 }

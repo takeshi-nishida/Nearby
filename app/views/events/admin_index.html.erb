@@ -1,0 +1,12 @@
+<h1>管理者メニュー</h1>
+
+<%= link_to "イベント登録", new_event_path %>
+<%= link_to "ユーザ登録", new_user_url %>
+<%=link_to "ユーザ一括登録(CSV)", new_csv_users_path %>
+
+<h2>イベント一覧</h2>
+<table>
+<% @events.each do |event| -%>
+  <tr><td><%=  link_to event.description, event_path(event) %></td><td><%= event_details(event) %></td><td><%= plan_button_for(event) %></td></tr>
+<% end -%>
+</table>

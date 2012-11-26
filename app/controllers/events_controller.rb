@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  http_basic_authenticate_with :name => "tnishida", :password => "3594t", :only => [:show, :new]
+  http_basic_authenticate_with :name => "tnishida", :password => "3594t", :only => [:show, :new, :plan, :forget]
 
   before_filter :current_user, only: [:want, :want_topic]
   
@@ -10,19 +10,20 @@ class EventsController < ApplicationController
     @want = Want.new
     @grouped_users = User.grouped_options_by_affiliation
   end
+  
+  def admin_index
+    @events = Event.find(:all)
+  end
 
   def show
     @event = Event.find(params[:id])
-    @users  = User.find(:all)
+    @excluded_users = @event.excluded_users
     @wants = Want.for_user
-#    @event.forget_seating
-    @priorities = Want.priorities
-    @event.plan_seating(@users, @priorities) unless @event.planned?
-    @satisfied, @unsatisfied = @event.partition(@wants)
+    @satisfied, @unsatisfied = @event.partition(@wants) if @event.planned?
   end
 
   def new
-    @event = Event.new
+    @event = Event.new(style: "tables", size1: 4, number1: User.count / 4, size2: 0, number2: 0)
   end
   
   def create
@@ -32,6 +33,21 @@ class EventsController < ApplicationController
     else
       render 'new'
     end
+  end
+  
+  def plan
+    @event = Event.find(params[:id])
+    unless @event.planned?
+      @priorities = Want.priorities
+      @event.plan_seating(@priorities)
+    end
+    redirect_to :admin_index
+  end
+  
+  def forget
+    @event = Event.find(params[:id])
+    @event.forget_seating
+    redirect_to :admin_index
   end
   
   def want
@@ -55,5 +71,13 @@ class EventsController < ApplicationController
     end
     
     redirect_to root_url
+  end 
+  
+  def update_exclude
+    current_user.exclude = params[:exclude]
+    current_user.save
+    puts current_user.exclude
+    redirect_to root_url
   end
+
 end

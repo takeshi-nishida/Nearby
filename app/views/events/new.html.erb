@@ -1,7 +1,18 @@
 <h1>イベント登録</h1>
 
 <%= form_for @event do |f| -%>
-  説明: <%= f.text_field :description %><br />
-  テーブル数: <%= f.text_field :groupsize %>
+<div>
+  イベントの名称: <%= f.text_field :description %>
+</div>
+<div>
+  <h2>座席レイアウトの設定</h2>
+  <%= f.radio_button(:style, "tables") %>テーブル席  <%= f.radio_button(:style, "rows") %>お座敷<br/>
+</div>
+<div>
+  <h2>座席数の設定</h2>
+  テーブル(列)種類1: <%= f.text_field :size1, size: 3 %>人 × <%= f.text_field :number1, size: 3 %>個<br />
+  テーブル(列)種類2: <%= f.text_field :size2, size: 3 %>人 × <%= f.text_field :number2, size: 3 %>個<br />
+  <strong>※合計 <%= User.count %> 人分の座席があるように設定してください</strong>
+</div>
   <%= f.submit "登録" %>
 <% end -%>

@@ -2,7 +2,11 @@ class CreateEvents < ActiveRecord::Migration
   def change
     create_table :events do |t|
       t.string :description
-      t.integer :groupsize
+      t.string :style
+      t.integer :size1
+      t.integer :number1
+      t.integer :size2
+      t.integer :number2
 
       t.timestamps
     end

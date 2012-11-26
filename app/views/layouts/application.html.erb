@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>席決めシステム</title>
+  <title>WISS2012夕食席決めシステム</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
   <nav>
-    <%= link_to "席決めシステム", root_url %>
+    <%= link_to "WISS2012夕食席決めシステム", root_url %>
     <% if current_user -%>
     ログイン中: <%= current_user.name %>
     <%= link_to "ログアウトする", logout_path %>

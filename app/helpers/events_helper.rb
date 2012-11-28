@@ -26,6 +26,10 @@ module EventsHelper
       button_to "席を決める", plan_event_path(event)
     end
   end
+  
+  def zasiki_style_name(i)
+    i / 2 % 2 == 0 ? "even-col" : "odd-col"
+  end
 
   # 4人分割の配列から座敷用の列を生成する
   def tables_to_rows(event)

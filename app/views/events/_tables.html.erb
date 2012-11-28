@@ -1,0 +1,13 @@
+<p>※テーブルの場所は座席表と照らし合わせて確認してください。</p>
+
+<% event.tables.each_with_index{|table, i| %>
+  <ul class="table">
+    <li class="group_header"><%= i + 1 %>番テーブル</li>
+    <% unless table.popular_topics.empty? %>
+      <li class="group_header"><%= table.popular_topics.map{|t| t.description }.join(",") %></li>
+    <% end %>
+    <% table.users.each{|u| -%>
+    <li><%= u.name %></li>
+    <% } -%>
+  </ul>
+<% } %>

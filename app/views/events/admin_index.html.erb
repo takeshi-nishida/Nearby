@@ -7,6 +7,6 @@
 <h2>イベント一覧</h2>
 <table>
 <% @events.each do |event| -%>
-  <tr><td><%=  link_to event.description, event_path(event) %></td><td><%= event_details(event) %></td><td><%= plan_button_for(event) %></td></tr>
+  <tr><td><%=  link_to event.description, event_path(event) %></td><td><%= event_details(event) %></td><td><%= plan_button_for(event) %></td><td><%= button_to "削除", event_path(event), method: "delete" %> </td></tr>
 <% end -%>
 </table>

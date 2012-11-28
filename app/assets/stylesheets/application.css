@@ -10,5 +10,6 @@
  *
  *= require_self
  *= require_tree .
+ *= require base
  *= require selectable/style
 */

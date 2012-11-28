@@ -54,16 +54,17 @@ class Event < ActiveRecord::Base
     # 2. 4人テーブルを、なるべくテーブルを越えての会話が成り立たなくなるように並べる
     best = best.group_by{|user, table| table }.values
 
-    a = Array.new
-    min = best.min_by{|us| us.length }
-    best.remove(min)
-    a << min
-    unless best.empty?
-      min = best.min_by {|us| tables_matching(min, us, priorities) }
-      best.remove(min)
-      a << min
-    end
-
+#    a = Array.new
+#    min = best.min_by{|us| us.length }
+#    best.delete(min)
+#    a << min
+#    unless best.empty?
+#      min = best.min_by {|us| tables_matching(min, us, priorities) }
+#      best.delete(min)
+#      a << min
+#    end
+    a = best.sort_by{|us| us.length }
+    p a
     # TODO 3. 4人の中での並び順を最適化する
 
     # 4. 席決め結果を記録する
@@ -157,17 +158,17 @@ class Event < ActiveRecord::Base
 
   def has_enough_seats
     if size1 * number1 + size2 * number2 < User.count
-      errors.add(:size1, "人数に対して席が不足しています")
-      errors.add(:size2, "人数に対して席が不足しています")
-      errors.add(:number1, "人数に対して席が不足しています")
-      errors.add(:number2, "人数に対して席が不足しています")
+      errors.add(:size1, "not enough seats compared to participants")
+      errors.add(:size2, "not enough seats compared to participants")
+      errors.add(:number1, "not enough seats compared to participants")
+      errors.add(:number2, "not enough seats compared to participants")
     end
   end
   
   def rows_should_be_even
     if style == "rows" then
-      errors.add(:size1, "列の長さは偶数でなければなりません") if size1 % 2 != 0
-      errors.add(:number1, "列の個数は偶数でなければなりません") if number1 % 2 != 0
+      errors.add(:size1, "row size has to be even") if size1 % 2 != 0
+      errors.add(:number1, "row number has to be even") if number1 % 2 != 0
     end
   end
 end

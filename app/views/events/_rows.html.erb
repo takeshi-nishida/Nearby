@@ -1,0 +1,22 @@
+<p>※テーブルの場所は座席表と照らし合わせて確認してください。</p>
+
+<table>
+    <col />
+  <% event.number1.times{|i| -%>
+    <col class="<%= zasiki_style_name(i)  %>"></col>
+  <% } -%>
+  <tr>
+    <th />
+  <% ("A".."Z").first(event.number1).each{|a| -%>
+    <th><%= a  %></th>
+  <% } -%>
+  </tr>
+  <% tables_to_rows(event).each_with_index{|users, i| -%>
+    <tr>
+      <th><%=  i %></th>
+      <% users.each{|u| %>
+      <td><%= u ? u.name : "[空席]" %></td>
+      <% } %>
+    </tr>
+  <% } -%>
+  </table>

@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  http_basic_authenticate_with :name => "tnishida", :password => "3594t", :only => [:show, :new, :plan, :forget]
+  http_basic_authenticate_with :name => "tnishida", :password => "3594t", :only => [:show, :new, :plan, :forget, :admin_index]
 
   before_filter :current_user, only: [:want, :want_topic]
   
@@ -33,6 +33,13 @@ class EventsController < ApplicationController
     else
       render 'new'
     end
+  end
+  
+  def destroy
+    @event = Event.find(params[:id])
+    @event.forget_seating
+    @event.destroy
+    redirect_to :admin_index
   end
   
   def plan

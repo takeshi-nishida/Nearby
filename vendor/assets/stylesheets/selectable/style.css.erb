@@ -1,0 +1,41 @@
+@charset "utf-8";
+
+
+/* Selectbox Styles
+=================================*/
+
+a.sctble_display {
+	border: solid #ddd 1px;
+                  font-size: small;
+}
+
+	a.sctble_display span {
+		padding: 0 22px 0 7px;
+		height: 22px;
+		background: #fff url(<%= asset_path 'icon_select.gif' %>) no-repeat right 0;
+		line-height: 22px;
+	}
+	a.sctble_display:hover span { background-position: right -21px }
+	a.sctble_focus span { background-position: right -42px !important }
+	
+/* Pulldown Mat (Basis)
+=================================*/
+
+div.sctble_mat {
+  font-size: medium;
+  background-color: #fff;
+}
+
+	div.sctble_mat dl { }
+	
+	div.sctble_mat a {
+		padding-right: .7em;
+		color: #1972ea;
+		font-weight: normal;
+	}
+	
+	div.sctble_mat a.selected {
+		color: #333;
+		text-decoration: none;
+		cursor: default;
+	}

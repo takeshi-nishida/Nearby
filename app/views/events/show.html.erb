@@ -1,5 +1,5 @@
 <h1><%= @event.description %>の席</h1>
-<%= event_details(@event) %>
+<p><%= event_details(@event) %></p>
 
 <%#= @priorities.to_s %>
 
@@ -13,29 +13,12 @@
 <%#*</div>%>
 <%# end %>
 
+<% if @event.planned? -%>
 <% case @event.style %>
 <% when "tables" %>
-<% @event.tables.each{|table| %>
-  <ul class="table">
-    <% unless table.popular_topics.empty? %>
-      <li><b><%= table.popular_topics.map{|t| t.description }.join(",") %></b></li>
-    <% end %>
-    <% table.users.each{|u| -%>
-    <li><%= u.name %></li>
-    <% } -%>
-  </ul>
-<% } %>
-
+<%= render :partial => "tables", :locals => { :event => @event } %>
 <% when "rows" %>
-  <table>
-  <% tables_to_rows(@event).each{|users| -%>
-    <tr>
-      <% users.each{|u| %>
-      <td><%= u ? u.name : "[空席]" %></td>
-      <% } %>
-    </tr>
-  <% } -%>
-  </table>
+<%= render :partial => "rows", :locals => { :event => @event } %>
 <% end %>
 
 <% unless @excluded_users.empty? %>
@@ -45,4 +28,8 @@
   <%= u.name %>
   <% end -%>  
   </p>
+<% end -%>
+
+<% else -%>
+  <p>決まった席はここで確認できますが、座席はまだ決まっていません。</p>
 <% end -%>

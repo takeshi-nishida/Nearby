@@ -6,6 +6,10 @@ body {
   font-size: medium;
 }
 
+nav{
+  margin-bottom: 16px;
+}
+
 div.wantform{
   width: 480px;
 //  border: 1px solid black;
@@ -45,4 +49,22 @@ ul.table{
 table {
   margin: 8px 8px 8px 8px;
   border: 1px solid black;
+  border-collapse: collapse;
+}
+
+li.group_header{
+  font-weight: bold;
+}
+
+td{
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
+col.even-col{
+  background: #99CCFF;
+}
+
+col.odd-col{
+
 }

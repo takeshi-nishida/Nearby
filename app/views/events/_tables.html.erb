@@ -6,8 +6,8 @@
     <% unless table.popular_topics.empty? %>
       <li class="group_header"><%= table.popular_topics.map{|t| t.description }.join(",") %></li>
     <% end %>
-    <% table.users.each{|u| -%>
-    <li><%= u.name %></li>
+    <% table.users.each_with_index{|u, i| -%>
+    <li><%= i + 1%>.<%= u.name %></li>
     <% } -%>
   </ul>
 <% } %>

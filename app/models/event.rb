@@ -9,8 +9,19 @@ class Event < ActiveRecord::Base
     !tables.empty?
   end
   
+  # 重いので注意
   def partition(wants)
-    wants.partition{|w| seatings.find_by_user_id(w.who.id).table == seatings.find_by_user_id(w.wantable.id).table }
+    wants.partition{|w|
+      case w.wantable_type
+      when "User"
+#        s1 = seatings.find_by_user_id(w.who.id)
+#        s2 = seatings.find_by_user_id(w.wantable.id)
+#        s1 && s2 && s1.table == s2.table
+        tables.any?{|table| (table.users & [w.who, w.wantable]).size == 2 }
+      when "Topic"
+        tables.any?{|table| table.popular_topics.include?(w.wantable) }
+      end
+    }
   end
   
   def forget_seating
@@ -41,7 +52,7 @@ class Event < ActiveRecord::Base
   def plan_seating_tables(priorities)
     h = initial_seating_tables 
     best = plan_seating_impl(h, priorities)
-    best = best.group_by{|user, table| table }.values
+    best = best.group_by{|user, table| table }.values.sort_by{|table| table.size }
     save_seatings(best)
   end 
   
@@ -54,17 +65,16 @@ class Event < ActiveRecord::Base
     # 2. 4人テーブルを、なるべくテーブルを越えての会話が成り立たなくなるように並べる
     best = best.group_by{|user, table| table }.values
 
-#    a = Array.new
-#    min = best.min_by{|us| us.length }
-#    best.delete(min)
-#    a << min
-#    unless best.empty?
-#      min = best.min_by {|us| tables_matching(min, us, priorities) }
-#      best.delete(min)
-#      a << min
-#    end
-    a = best.sort_by{|us| us.length }
-    p a
+    a = Array.new
+    min = best.min_by{|us| us.length }
+    best.delete(min)
+    a << min
+    until best.empty?
+      min = best.min_by {|us| tables_matching(min, us, priorities) }
+      best.delete(min)
+      a << min
+    end
+#    a = best.sort_by{|us| us.length }
     # TODO 3. 4人の中での並び順を最適化する
 
     # 4. 席決め結果を記録する
@@ -87,7 +97,7 @@ class Event < ActiveRecord::Base
     best = h
 
     excluded_ids = User.excluded.collect{|u| u.id }
-    pairs = priorities.sort{|a, b| b[1] <=> a[1] }.map{|pair, score| pair }.select{|pair| (pair & excluded_ids).empty? }
+    pairs = priorities.select{|pair, score| score > 0 and (pair & excluded_ids).empty? }.sort{|a, b| b[1] <=> a[1] }.map{|pair, score| pair }
     satisfied, unsatisfied = pairs.partition{|pair| sametable?(h, pair[0], pair[1]) }
     
     until unsatisfied.empty?
@@ -135,7 +145,7 @@ class Event < ActiveRecord::Base
   end
 
   def total_priority(pairs, priorities)
-    pairs.inject(0){|sum, pair| sum + priorities[pair] }
+    pairs.inject(0){|sum, pair| sum + priorities[pair.sort] }
   end
   
   def wantedscore(user, users, priorities)

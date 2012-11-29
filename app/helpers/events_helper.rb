@@ -4,10 +4,10 @@ module EventsHelper
   def event_details(e)
     h1 = {"tables" => "テーブル席", "rows" => "座敷"}
     h2 = {"tables" => "個", "rows" => "列"}
-    s = "会場タイプ:#{h1[e.style]} ("
+    s = "#{h1[e.style]} ("
     s << "#{e.size1}人 × #{e.number1}#{h2[e.style]}" if e.number1 > 0
-    s << "#{e.size2}人 × #{e.number2}#{h2[e.style]}" if e.number2 > 0
-    s << "), 参加者: #{e.users.count}人"
+    s << " + #{e.size2}人 × #{e.number2}#{h2[e.style]}" if e.number2 > 0
+    s << "), 席決め人数: #{e.users.count}人"
   end
 
   def human_readable_want(w)

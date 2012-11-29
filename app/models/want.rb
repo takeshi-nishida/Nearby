@@ -13,17 +13,39 @@ class Want < ActiveRecord::Base
   def priority
     user == who || user == wantable ? 2 : 1 # 本人による希望を2倍優先する
   end
-
+  
+  # どちらかが「自分で自分の席を決めたい」を希望している場合は、残念ながらその希望はかなえられない
+  def exclude?
+    who.exclude or (wantable_type == "User" and wantable.exclude)
+  end
+  
+  # 結構重いので注意
+  def satisfied?
+    tables = Event.all.map{|e| e.tables }.flatten
+    case wantable_type
+    when "User"
+      tables.any?{|table| (table.users & [who, wantable]).size == 2 }
+    when "Topic"
+      tables.any?{|table| table.popular_topics.include?(wantable) }
+    end
+  end
+  
   # [uid1, uid2] => priority for the two というハッシュを作成
   def self.priorities
     h = Hash.new(0)
-    for_user.each{|w|
+
+    # 1. 人希望を追加する
+    for_user.reject{|w| w.exclude? }.each{|w|
       key = [w.who.id, w.wantable.id].sort;
       h[key] = w.priority if w.priority > h[key]
     }
-    Topic.all.each{|topic|
-      topic.wants.map{|w| w.who.id }.combination(2).each{|a| h[a.sort] = 2 }
+
+    # 2. 話題希望を追加する
+    Topic.find_each{|topic|
+      topic.wants.reject{|w| w.exclude? }.map{|w| w.who.id }.combination(2).each{|a| h[a.sort] = 1 }
     }
+    
+    # 3. 既にかなっている希望を減点する
     tables = Event.all.flat_map{|e| e.tables }
     tables.each{|table|
       table.users.map{|u| u.id }.combination(2).each{|a|

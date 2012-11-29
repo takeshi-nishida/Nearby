@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  http_basic_authenticate_with :name => "tnishida", :password => "3594t", :only => [:show, :new, :plan, :forget, :admin_index]
+  http_basic_authenticate_with :name => "tnishida", :password => "3594t", :only => [:new, :create, :plan, :forget, :admin_index]
 
   before_filter :current_user, only: [:want, :want_topic]
   
@@ -13,13 +13,17 @@ class EventsController < ApplicationController
   
   def admin_index
     @events = Event.find(:all)
+    @included_users = User.included
+    @excluded_users = User.excluded
+    @wants = Want.find(:all)
+    @topics = Topic.find(:all)
   end
 
   def show
     @event = Event.find(params[:id])
     @excluded_users = @event.excluded_users
-    @wants = Want.for_user
-    @satisfied, @unsatisfied = @event.partition(@wants) if @event.planned?
+#    @wants = Want.for_user
+#    @satisfied, @unsatisfied = @event.partition(@wants) if @event.planned?
   end
 
   def new

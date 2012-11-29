@@ -35,4 +35,9 @@ class User < ActiveRecord::Base
   def topics
     wants.select{|w| w.wantable_type == "Topic" }.map{|w| w.wantable }
   end
+  
+  # 重いので注意
+  def satisfied?
+    wants.any?{|w| w.satisfied? }
+  end
 end

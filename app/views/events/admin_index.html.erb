@@ -4,9 +4,43 @@
 <%= link_to "ユーザ登録", new_user_url %>
 <%=link_to "ユーザ一括登録(CSV)", new_csv_users_path %>
 
+<h2>希望充足度</h2>
+<ul>
+  <li>席決め対象人数: <%= @included_users.length %></li>
+  <li>希望のかなった人数: <%= @included_users.select{|u| u.satisfied? }.size %> / <%= @included_users.reject{|u| u.wants.empty? }.size %></li>
+  <li>自分で自分の席を決めたいを選んだ人数: <%= @excluded_users.count %></li>
+  <li>
+    全希望:<%= @wants.count{|w| w.satisfied? }%> / <%= @wants.length %>,
+    人希望: <%= Want.for_user.select{|w| w.satisfied? }.size %> / <%= Want.for_user.count %>,
+    話題希望: <%= Want.for_topic.select{|w| w.satisfied? }.size %> / <%= Want.for_topic.count %>
+  </li>
+</ul>
+
 <h2>イベント一覧</h2>
 <table>
+  <tr><th>イベント名</th><th>設定</th><th>叶えた人希望の数</th><th colspan="2">ボタン</th></tr>
 <% @events.each do |event| -%>
-  <tr><td><%=  link_to event.description, event_path(event) %></td><td><%= event_details(event) %></td><td><%= plan_button_for(event) %></td><td><%= button_to "削除", event_path(event), method: "delete" %> </td></tr>
+  <% satisfied, unsatisfied = event.partition(@wants) %>
+  <tr>
+    <td><%=  link_to event.description, event_path(event) %></td>
+    <td><%= event_details(event) %></td>
+    <td><%= satisfied.select{|w| w.wantable_type == "User" }.size %> 個</td>
+    <td><%= plan_button_for(event) %></td>
+    <td><%= button_to "削除", event_path(event), method: "delete", confirm: "Are you sure?" %></td>
+  </tr>
 <% end -%>
 </table>
+
+<h2>トピック一覧</h2>
+<ul>
+  <% @topics.sort_by{|topic| topic.wants.size }.each{|topic| -%>
+  <li>(<%= topic.wants.size %>) <%= topic.description %></li>
+  <% } -%>
+</ul>
+
+<h2>希望一覧</h2>
+<ul>
+  <% @wants.each{|w| -%>
+  <li><%= w.satisfied? ? "○" : "×" %><%= human_readable_want(w) %></li>
+  <% } -%>
+</ul>

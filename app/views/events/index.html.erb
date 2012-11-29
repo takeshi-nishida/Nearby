@@ -33,7 +33,7 @@
   
     <h2>あなたが登録した希望</h2>
     <% if current_user.exclude %>
-    <p>※以下の希望通りに席を決めてほしい場合は「自分の席は自分で決めたい」を無効にしてください。</p>
+    <p>※「自分の席は自分で決めたい」にしていると希望を登録していても考慮されません。</p>
     <% end %>
     <p><%= current_user.wants.count %>件の希望が登録されています
       <button onclick="$('#wishlist').show()">希望の一覧を表示する</button>

@@ -74,8 +74,6 @@ class Event < ActiveRecord::Base
       best.delete(min)
       a << min
     end
-#    a = best.sort_by{|us| us.length }
-    # TODO 3. 4人の中での並び順を最適化する
 
     # 4. 席決め結果を記録する
     save_seatings(a.reverse)

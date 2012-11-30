@@ -5,4 +5,4 @@ $ ->
   $("#select_user").jQselectable() if $("#select_user").length
   $("#select_who").jQselectable() if $("#select_who").length
   $("#select_wantable").jQselectable() if $("#select_wantable").length
-  $("#wishlist").hide() if $("#wishlist")
+#  $("#wishlist").hide() if $("#wishlist")

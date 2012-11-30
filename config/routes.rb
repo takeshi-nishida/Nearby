@@ -2,6 +2,7 @@ Nearby::Application.routes.draw do
   resources :topics
 
   resources :users do
+    resources :wants
     collection do
       get "new_csv"
       post "import_csv"

@@ -6,12 +6,14 @@ body {
   font-size: medium;
 }
 
+p { width: 600px; }
+
 nav{
   margin-bottom: 16px;
 }
 
 div.wantform{
-  width: 480px;
+  width: 600px;
 //  border: 1px solid black;
   border-radius: 8px;
   background: #99CCFF;
@@ -20,7 +22,7 @@ div.wantform{
 }
 
 div.excludeform{
-  width: 480px;
+  width: 600px;
 //  border: 1px solid black;
   border-radius: 8px;
   background: #FF9999;

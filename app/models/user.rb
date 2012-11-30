@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   scope :excluded, where(exclude: true)
   scope :included, where(exclude: false)
   
-  has_many :wants
+  has_many :wants, :dependent => :destroy
   has_many :wanted, as: :wantable
 
   has_many :seatings

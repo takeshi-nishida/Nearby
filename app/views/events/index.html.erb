@@ -1,16 +1,28 @@
+<h2>システム趣旨説明と手順</h2>
+<p>
+  WISS 2012では、「○○さんと話したい」などの希望をみなさんに入力してもらい、それを基にして夕食の座席を決める実験的な試みを行うことになりました。
+  ご利用の手順：
+</p>
+<ol>
+  <li><%= "[いまここ]" unless current_user %>ログインする （メールでお知らせしたパスワードをご利用ください。ユーザ登録は不要です。）</li>
+  <li><%= "[いまここ]" if current_user %>希望を入力する <strong>12月5日17:00〆切</strong> (仮)</li>
+  <li>当日、受付で席次表を受け取り、夕食の際にそれを確認のうえ着席する</li>
+</ol>
 
 <% if current_user %>
   <h2>希望を登録する</h2>
-
-  <% unless current_user.exclude %>
+  
   <div class="wantform">
   <%= form_tag want_events_path do -%>
     <%#= collection_select :want, :who_id, @users, :id, :name, selected: current_user.id %>
     <%#= collection_select :want, :wantable_id, @users, :id, :name %>
     <%= select :want, :who_id, grouped_options_for_select(@grouped_users, current_user.id), {}, id: "select_who" %> さんが
     <%= select :want, :wantable_id, grouped_options_for_select(@grouped_users), {}, id: "select_wantable" %> さんと
-    <%= submit_tag "近くの席になれたらいいな" %><br/>
-    ※自分が含まれていない希望も登録できます。 
+    <%= submit_tag "近くの席になれたらいいな" %>
+    <p>
+      憧れのあの人に研究を売り込むチャンス？<br/>
+      自分が含まれていない希望を登録して、誰かを後押しすることもできます。
+    </p> 
   <% end -%>
   </div>
 
@@ -20,8 +32,12 @@
     の<%= submit_tag "話がしたい" %>
     <%= link_to "他の話題を提案する", new_topic_url %>
   <% end -%>
+    <p>
+      特に希望の相手は思い当たらない人向けにはこちら。<br />
+      同じ話題を希望している人どうしは近くの席になりやすくなります。<br/>
+      自分の研究テーマを<%= link_to "話題として追加", new_topic_url %>してみてもいいかも？
+    </p>
   </div>
-  <% end %>
   
   <div class="excludeform">
     <%=  form_tag update_exclude_events_path do -%>
@@ -29,22 +45,28 @@
       <%= label_tag(:exclude, "自分の席は自分で決めたい") %>
       <%= submit_tag "更新" %>
     <% end -%>
+    <p>
+      他の人の席を決めた後残った席の中から、当日自由に席を決めていただけます。<br/>
+      選択肢が非常に限られる可能性もありますのでご了承ください。
+    </p>
   </div>
   
     <h2>あなたが登録した希望</h2>
     <% if current_user.exclude %>
-    <p>※「自分の席は自分で決めたい」にしていると希望を登録していても考慮されません。</p>
+    <p>
+      ※現在、「自分の席は自分で決めたい」が設定されています。自分に関する希望は登録できますが、考慮されません。（それ以外の希望は考慮されます。）
+    </p>
     <% end %>
     <p><%= current_user.wants.count %>件の希望が登録されています
-      <button onclick="$('#wishlist').show()">希望の一覧を表示する</button>
+      <%#*<button onclick="$('#wishlist').show()">希望の一覧を表示する</button>%>
     </p>
-    <ul id="wishlist">
+    <table id="wishlist">
     <% current_user.wants.each{|want| -%>
-      <li><%= human_readable_want(want) %></li>
+      <tr><td><%= human_readable_want(want) %></td><td><%= button_to "やっぱりやめる", user_want_path(current_user, want), method: "delete", confirm: "本当に？" %></td></tr>
     <% } -%>
-    </ul>
+    </table>
 <% else -%>
-    希望を登録するにはログインしてください。
+    <p>希望を登録するにはログインしてください。</p>
     <%= form_tag login_path do -%>
       名前: <%#= select_tag :user_id, options_from_collection_for_select(@users, :id, :name_with_affiliation), include_blank: true %>
       <%= select_tag :user_id, grouped_options_for_select(@grouped_users), prompt: "名前を選択してください", id: "select_user" %>
@@ -53,7 +75,7 @@
     <% end -%>
 <% end -%>
 
-<h2>イベント一覧</h2>
+<h2>夕食一覧</h2>
 <% @events.each{|e| -%>
   <%= link_to e.description, event_path(e)  %>
 <% } -%>

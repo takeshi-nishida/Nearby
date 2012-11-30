@@ -85,7 +85,7 @@ class EventsController < ApplicationController
   end
   
   def update_exclude
-    current_user.exclude = params[:exclude]
+    current_user.exclude = params[:exclude] ? true : false
     current_user.save
     puts current_user.exclude
     redirect_to root_url

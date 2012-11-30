@@ -6,9 +6,9 @@
 
 <h2>希望充足度</h2>
 <ul>
-  <li>席決め対象人数: <%= @included_users.length %></li>
+  <li>席決め対象人数: <%= @included_users.length %> / <%= User.count %></li>
   <li>希望のかなった人数: <%= @included_users.select{|u| u.satisfied? }.size %> / <%= @included_users.reject{|u| u.wants.empty? }.size %></li>
-  <li>自分で自分の席を決めたいを選んだ人数: <%= @excluded_users.count %></li>
+  <li>自分で自分の席を決めたいを選んだ人数: <%= @excluded_users.length %></li>
   <li>
     全希望:<%= @wants.count{|w| w.satisfied? }%> / <%= @wants.length %>,
     人希望: <%= Want.for_user.select{|w| w.satisfied? }.size %> / <%= Want.for_user.count %>,
@@ -31,6 +31,13 @@
 <% end -%>
 </table>
 
+<h2>ユーザ一覧</h2>
+<ul>
+  <% User.find_each{|u|  -%>
+  <li><%= u.name %> <%= u.exclude  %></li>
+  <% } -%>
+</ul>
+
 <h2>トピック一覧</h2>
 <ul>
   <% @topics.sort_by{|topic| topic.wants.size }.each{|topic| -%>
@@ -41,6 +48,6 @@
 <h2>希望一覧</h2>
 <ul>
   <% @wants.each{|w| -%>
-  <li><%= w.satisfied? ? "○" : "×" %><%= human_readable_want(w) %></li>
+  <li><%= w.satisfied? ? "○" : "×" %><%= human_readable_want(w) %> by <%= w.user.name %></li>
   <% } -%>
 </ul>

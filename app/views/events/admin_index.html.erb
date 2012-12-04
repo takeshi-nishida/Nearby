@@ -1,8 +1,9 @@
 <h1>管理者メニュー</h1>
 
 <%= link_to "イベント登録", new_event_path %>
-<%= link_to "ユーザ登録", new_user_url %>
+<%= link_to "ユーザ登録", new_user_path %>
 <%=link_to "ユーザ一括登録(CSV)", new_csv_users_path %>
+<%= link_to "ユーザ一覧", users_path %>
 
 <h2>希望充足度</h2>
 <ul>
@@ -31,13 +32,6 @@
 <% end -%>
 </table>
 
-<h2>ユーザ一覧</h2>
-<ul>
-  <% User.find_each{|u|  -%>
-  <li><%= u.name %> <%= u.exclude  %></li>
-  <% } -%>
-</ul>
-
 <h2>トピック一覧</h2>
 <ul>
   <% @topics.sort_by{|topic| topic.wants.size }.each{|topic| -%>
@@ -48,6 +42,6 @@
 <h2>希望一覧</h2>
 <ul>
   <% @wants.each{|w| -%>
-  <li><%= w.satisfied? ? "○" : "×" %><%= human_readable_want(w) %> by <%= w.user.name %></li>
+  <li><%= w.satisfied? ? "○" : "×" %><%= human_readable_want(w) %></li>
   <% } -%>
 </ul>

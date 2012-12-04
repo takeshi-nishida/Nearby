@@ -11,7 +11,8 @@ class Want < ActiveRecord::Base
   scope :for_topic, where(wantable_type: "Topic")
   
   def priority
-    user == who || user == wantable ? 2 : 1 # 本人による希望を2倍優先する
+    # 本人による希望を優先する。１つも希望がかなっていない人の希望を優先する。
+    user == who || user == wantable ? (user.satisfied? ? 2 : 4) : 1
   end
   
   # どちらかが「自分で自分の席を決めたい」を希望している場合は、残念ながらその希望はかなえられない

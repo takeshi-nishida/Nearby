@@ -1,0 +1,7 @@
+<h1>ユーザ一覧</h1>
+
+<ul>
+<% User.find_each{|u|  -%>
+  <li><%= link_to u.name, user_path(u)  %> (<%= u.furigana %>) <%= link_to "編集する", edit_user_path(u) %></li>
+<% } -%>
+</li>

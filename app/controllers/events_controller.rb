@@ -1,4 +1,5 @@
 class EventsController < ApplicationController
+  http_basic_authenticate_with :name => "wiss2012", :password => "aomori338", :only => [:index]
   http_basic_authenticate_with :name => "tnishida", :password => "3594t", :only => [:new, :create, :plan, :forget, :admin_index]
 
   before_filter :current_user, only: [:want, :want_topic]

@@ -15,7 +15,7 @@ module EventsHelper
     when "User"
       "#{w.who.name} さんが #{w.wantable.name} さんが近くの席になれたらいいな"
     when "Topic"
-      "#{w.wantable.description} の話がしたい"
+      "#{w.wantable.description if w.wantable} の話がしたい"
     end
   end
         

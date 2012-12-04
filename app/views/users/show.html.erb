@@ -1,2 +1,3 @@
-<h1>Users#show</h1>
-<p>Find me in app/views/users/show.html.erb</p>
+<h1><%= @user.name %></h1>
+<p>所属: <%= @user.affiliation %>, ふりがな: <%= @user.furigana  %></p>
+<p><%= link_to "トップページに戻る", :root %></p>

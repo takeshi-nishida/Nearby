@@ -6,15 +6,11 @@ body {
   font-size: medium;
 }
 
-p { width: 600px; }
-
 nav{
   margin-bottom: 16px;
 }
 
 div.wantform{
-  width: 600px;
-//  border: 1px solid black;
   border-radius: 8px;
   background: #99CCFF;
   margin: 8px;
@@ -22,8 +18,6 @@ div.wantform{
 }
 
 div.excludeform{
-  width: 600px;
-//  border: 1px solid black;
   border-radius: 8px;
   background: #FF9999;
   margin: 8px;
@@ -42,10 +36,12 @@ div.footer{
 ul.table{
   list-style-type: none;
   display: inline-block;
-  border-radius: 8px;
+  vertical-align: top;
+  border-radius: 6px;
   background: #99CCFF;
-  margin: 8px;
-  padding: 8px;
+  margin: 2px;
+  padding: 2px;
+  width:7em;
 }
 
 table {
@@ -56,6 +52,12 @@ table {
 
 li.group_header{
   font-weight: bold;
+}
+
+div.keepshort{
+  width: 6em;
+  height: 1.25em;
+  overflow: hidden;
 }
 
 td{
@@ -69,4 +71,8 @@ col.even-col{
 
 col.odd-col{
 
+}
+
+select.who{
+  max-width: 8em;
 }

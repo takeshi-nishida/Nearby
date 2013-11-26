@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
   
   def self.grouped_options_by_affiliation
     g = all.group_by{|u| u.affiliation }
-    g.each{|k, us| g[k] = us.map{|u| [u.name, u.id]} } 
+    g.each{|k, us| g[k] = us.map{|u| [u.name, u.id, "data-participation_type" => [ "発表者", "デモ・ポスター発表", "PCメンバー", "学生ボランティア", "参加のみ" ].sample ] } } 
   end
   
   def self.grouped_options_by_furigana
@@ -36,8 +36,16 @@ class User < ActiveRecord::Base
     wants.select{|w| w.wantable_type == "Topic" }.map{|w| w.wantable }
   end
   
+  def popularity
+    Want.where(wantable_type: "User", wantable_id: self.id).count
+  end
+  
   # 重いので注意
   def satisfied?
     wants.any?{|w| w.satisfied? }
+  end
+  
+  def impossible?
+    wants.all?{|w| w.impossible? }
   end
 end

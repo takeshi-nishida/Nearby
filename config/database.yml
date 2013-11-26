@@ -6,7 +6,6 @@
 development:
   adapter: sqlite3
   database: db/wiss2012.sqlite3
-  #dump.sqlite3
   #development.sqlite3
   pool: 5
   timeout: 5000

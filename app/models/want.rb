@@ -13,6 +13,7 @@ class Want < ActiveRecord::Base
   def priority
     # 本人による希望を優先する。１つも希望がかなっていない人の希望を優先する。
     user == who || user == wantable ? (user.satisfied? ? 2 : 4) : 1
+#      user == who || user == wantable ? 2 : 1
   end
   
   # どちらかが「自分で自分の席を決めたい」を希望している場合は、残念ながらその希望はかなえられない
@@ -22,12 +23,27 @@ class Want < ActiveRecord::Base
   
   # 結構重いので注意
   def satisfied?
-    tables = Event.all.map{|e| e.tables }.flatten
+#    tables = Event.all.map{|e| e.tables }.flatten
     case wantable_type
     when "User"
-      tables.any?{|table| (table.users & [who, wantable]).size == 2 }
+      # who が属するテーブルに wantable が存在
+      who.tables.any?{|table| table.users.include?(wantable) }
+#      tables.any?{|table| (table.users & [who, wantable]).size == 2 }
     when "Topic"
-      tables.any?{|table| table.popular_topics.include?(wantable) }
+      # user が続するテーブルに wantable を希望している人が存在する
+      who.tables.any?{|table|
+        table.users.any?{|u| user != u and u.topics.include?(wantable) }
+      }
+#      tables.any?{|table| table.popular_topics.include?(wantable) }
+    end
+  end
+  
+  def impossible?
+    case wantable_type
+    when "User"
+      wantable.exclude?
+    when "Topic"
+      wantable.wants.size < 2
     end
   end
   
@@ -38,12 +54,16 @@ class Want < ActiveRecord::Base
     # 1. 人希望を追加する
     for_user.reject{|w| w.exclude? }.each{|w|
       key = [w.who.id, w.wantable.id].sort;
-      h[key] = w.priority if w.priority > h[key]
+      p = w.priority
+      h[key] = p if p > h[key]
     }
 
     # 2. 話題希望を追加する
     Topic.find_each{|topic|
-      topic.wants.reject{|w| w.exclude? }.map{|w| w.who.id }.combination(2).each{|a| h[a.sort] = 1 }
+      topic.wants.reject{|w| w.exclude? }.map{|w| w.who.id }.combination(2).each{|a|
+        key = a.sort
+        h[key] = 2 if h[key]  < 2 
+        }
     }
     
     # 3. 既にかなっている希望を減点する
@@ -51,7 +71,7 @@ class Want < ActiveRecord::Base
     tables.each{|table|
       table.users.map{|u| u.id }.combination(2).each{|a|
         key = a.sort
-        h[key] = -1 if h[key] > 0
+        h[key] = -100 if h[key] > 0
      }
     }
     h

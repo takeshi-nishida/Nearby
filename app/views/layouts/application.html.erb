@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>WISS2012夕食席決めシステム</title>
+  <title>WISS夕食席決めシステム</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
-<body>
-  <nav>
-    <%= link_to "WISS2012夕食席決めシステム", root_url %>
+<body class="container">
+  <nav class="navbar navbar-default">
+    <%= link_to "WISS夕食席決めシステム", root_url, class: "navbar-brand" %>
     <% if current_user -%>
-    ログイン中: <%= current_user.name %>
-    <%= link_to "ログアウトする", logout_path %>
+    <ul class="nav navbar-nav">
+      <li class="navbar-text">ログイン中: <%= current_user.name %></li>
+      <li><%= button_to "ログアウト", logout_path, class: "btn btn-default navbar-btn" %></li>
+    </ul>
   <% end %>  
   </nav>
 

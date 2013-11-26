@@ -1,8 +1,8 @@
 class Event < ActiveRecord::Base
   validate :has_enough_seats, :rows_should_be_even
 
-  has_many :tables
-  has_many :seatings, :through => :tables
+  has_many :tables, :dependent => :delete_all
+  has_many :seatings, :through => :tables,  :dependent => :delete_all
   has_many :users, :through => :seatings
   
   def planned?
@@ -51,7 +51,10 @@ class Event < ActiveRecord::Base
 
   def plan_seating_tables(priorities)
     h = initial_seating_tables 
-    best = plan_seating_impl(h, priorities)
+#    best = plan_seating_impl(h, priorities)
+    plans = Array.new
+    100.times{ plans << plan_seating_impl(h, priorities) }
+    best, bestscore = plans.max_by { |plan, score|  score }
     best = best.group_by{|user, table| table }.values.sort_by{|table| table.size }
     save_seatings(best)
   end 
@@ -60,7 +63,10 @@ class Event < ActiveRecord::Base
     # 1. ４人テーブルだと思って分割する
     h = Hash.new
     User.included.shuffle.each_with_index{|u, i| h[u.id] = i / 4 }
-    best = plan_seating_impl(h, priorities)
+#    best = plan_seating_impl(h, priorities)
+    plans = Array.new
+    100.times{ plans << plan_seating_impl(h, priorities) }
+    best, bestscore = plans.max_by { |plan, score|  score }
     
     # 2. 4人テーブルを、なるべくテーブルを越えての会話が成り立たなくなるように並べる
     best = best.group_by{|user, table| table }.values
@@ -85,7 +91,8 @@ class Event < ActiveRecord::Base
   def initial_seating_tables
     sn1 = size1 * number1
     h = Hash.new
-    users = User.included.shuffle
+#    users = User.included.shuffle
+    users = User.included.sort_by{|u| u.popularity } # 希望されていない順に並べる（人気者が size2 の方に入るように　size2 > size1 と仮定）
     users.take(sn1).each_with_index{|u, i| h[u.id] = i % number1 }
     users.drop(sn1).each_with_index{|u, i| h[u.id] = i % number2 + number1 }
     h
@@ -95,13 +102,13 @@ class Event < ActiveRecord::Base
     best = h
 
     excluded_ids = User.excluded.collect{|u| u.id }
-    pairs = priorities.select{|pair, score| score > 0 and (pair & excluded_ids).empty? }.sort{|a, b| b[1] <=> a[1] }.map{|pair, score| pair }
+    pairs = priorities.select{|pair, score| score > 0 and (pair & excluded_ids).empty? }.sort{|a, b| a[1] <=> b[1] }.map{|pair, score| pair }
     satisfied, unsatisfied = pairs.partition{|pair| sametable?(h, pair[0], pair[1]) }
     
     until unsatisfied.empty?
       best, max, improved = h, total_priority(satisfied, priorities), false
 
-      unsatisfied.each{|pair|
+      unsatisfied.shuffle.each{|pair|
         # 希望に従って入れ替える
         u1, u2 = pair[0], pair[1]
         if not sametable?(h, u1, u2)
@@ -117,15 +124,18 @@ class Event < ActiveRecord::Base
         
         # 入れ替え結果を評価する
         score = total_priority(pairs.select{|pair| sametable?(h, pair[0], pair[1])}, priorities)
-        best, max, improved = h.clone, score, true if score > max
+        (best, max, improved = h.clone, score, true) if score > max
       }
 
       satisfied, unsatisfied = pairs.partition{|pair| sametable?(best, pair[0], pair[1]) }
-      h = best
-      break unless improved # 改善が見られなかったら、全ての希望を満たしていなくても探索終了
+      if improved then
+        h = best
+      else
+        break # 改善が見られなかったら、全ての希望を満たしていなくても探索終了
+      end
     end
 
-    best
+    [best,  total_priority(pairs.select{|pair| sametable?(best, pair[0], pair[1])}, priorities)]
   end
   
   def save_seatings(groups)

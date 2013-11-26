@@ -1,6 +1,4 @@
-<p>※テーブルの場所は座席表と照らし合わせて確認してください。</p>
-
-<table>
+<table class="rows">
     <col />
   <% event.number1.times{|i| -%>
     <col class="<%= zasiki_style_name(i)  %>"></col>
@@ -15,7 +13,7 @@
     <tr>
       <th><%=  i + 1 %></th>
       <% users.each{|u| %>
-      <td><%= u ? u.name : "[空席]" %></td>
+      <td><div class="keepshort"><%= u ? u.name : "[空席]" %></div></td>
       <% } %>
     </tr>
   <% } -%>

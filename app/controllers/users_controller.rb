@@ -49,7 +49,8 @@ class UsersController < ApplicationController
         password: row["password"],
         password_confirmation: row["password_confirmation"],
         furigana: row["furigana"],
-        affiliation: row["affiliation"]
+        affiliation: row["affiliation"],
+        type: row["type"]
       )
       @user.save
     end

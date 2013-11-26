@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
 module EventsHelper
+  PARTICIPATION_TYPES = [ "発表者", "デモ・ポスター発表", "PCメンバー", "学生ボランティア", "参加のみ" ]
+  
+  def participation_types
+    PARTICIPATION_TYPES
+  end
+      
   def event_details(e)
     h1 = {"tables" => "テーブル席", "rows" => "座敷"}
     h2 = {"tables" => "個", "rows" => "列"}

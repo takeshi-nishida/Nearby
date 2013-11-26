@@ -8,12 +8,14 @@
 <h2>希望充足度</h2>
 <ul>
   <li>席決め対象人数: <%= @included_users.length %> / <%= User.count %></li>
-  <li>希望のかなった人数: <%= @included_users.select{|u| u.satisfied? }.size %> / <%= @included_users.reject{|u| u.wants.empty? }.size %></li>
-  <li>自分で自分の席を決めたいを選んだ人数: <%= @excluded_users.length %></li>
   <li>
-    全希望:<%= @wants.count{|w| w.satisfied? }%> / <%= @wants.length %>,
-    人希望: <%= Want.for_user.select{|w| w.satisfied? }.size %> / <%= Want.for_user.count %>,
-    話題希望: <%= Want.for_topic.select{|w| w.satisfied? }.size %> / <%= Want.for_topic.count %>
+    希望のかなった人数: <%= @user_with_wants.select{|u| u.satisfied? }.size %> / <%= @user_with_wants.size  %>
+    (うち <%= @user_with_wants.select{|u| u.impossible?}.size %> 人は満たせる希望がない)
+  </li>
+  <li>自分で自分の席を決めたいを選んだ人数: <%= @excluded_users.length %></li>
+  <li>全希望:<%= @wants.count{|w| w.satisfied? }%> / <%= @wants.length %> (うち<%= @wants.count{|w| w.impossible?} %>満たせない)</li>
+  <li>人希望: <%= Want.for_user.select{|w| w.satisfied? }.size %> / <%= Want.for_user.count %> (うち<%= Want.for_user.select{|w| w.impossible? }.size %>満たせない)</li>
+  <li>話題希望: <%= Want.for_topic.select{|w| w.satisfied? }.size %> / <%= Want.for_topic.count %> (うち<%= Want.for_topic.select{|w| w.impossible? }.size %>満たせない)</li>
   </li>
 </ul>
 

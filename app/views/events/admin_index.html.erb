@@ -41,9 +41,12 @@
   <% } -%>
 </ul>
 
-<h2>希望一覧</h2>
+<h2>希望満足状況の詳細</h2>
+<% User.all.reject{|u| u.wants.empty? }.each{|u| %>
+<h3><%= u.name %><%= "○" if u.satisfied? %><%= " ※自由席希望" if u.exclude %></h3>
 <ul>
-  <% @wants.each{|w| -%>
-  <li><%= w.satisfied? ? "○" : "×" %><%= human_readable_want(w) %></li>
+  <% u.wants.each{|w| -%>
+  <li><%= w.satisfied? ? "○" : (w.impossible? ? "▼" : "×") %><%= human_readable_want(w) %></li>
   <% } -%>
 </ul>
+<% } %>

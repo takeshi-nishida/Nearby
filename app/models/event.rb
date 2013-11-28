@@ -50,22 +50,16 @@ class Event < ActiveRecord::Base
   #########################################################
 
   def plan_seating_tables(priorities)
-    h = initial_seating_tables 
-#    best = plan_seating_impl(h, priorities)
     plans = Array.new
-    100.times{ plans << plan_seating_impl(h, priorities) }
+    1.times{ plans << plan_seating_impl(initial_seating_tables, priorities) }
     best, bestscore = plans.max_by { |plan, score|  score }
     best = best.group_by{|user, table| table }.values.sort_by{|table| table.size }
     save_seatings(best)
   end 
   
   def plan_seating_rows(priorities)
-    # 1. ４人テーブルだと思って分割する
-    h = Hash.new
-    User.included.shuffle.each_with_index{|u, i| h[u.id] = i / 4 }
-#    best = plan_seating_impl(h, priorities)
     plans = Array.new
-    100.times{ plans << plan_seating_impl(h, priorities) }
+    1.times{ plans << plan_seating_impl(initial_seating_rows, priorities) }
     best, bestscore = plans.max_by { |plan, score|  score }
     
     # 2. 4人テーブルを、なるべくテーブルを越えての会話が成り立たなくなるように並べる
@@ -91,51 +85,66 @@ class Event < ActiveRecord::Base
   def initial_seating_tables
     sn1 = size1 * number1
     h = Hash.new
-#    users = User.included.shuffle
-    users = User.included.sort_by{|u| u.popularity } # 希望されていない順に並べる（人気者が size2 の方に入るように　size2 > size1 と仮定）
+    users = User.included.shuffle
+#    users = User.included.sort_by{|u| u.popularity } # 希望されていない順に並べる（人気者が size2 の方に入るように　size2 > size1 と仮定）
     users.take(sn1).each_with_index{|u, i| h[u.id] = i % number1 }
     users.drop(sn1).each_with_index{|u, i| h[u.id] = i % number2 + number1 }
-    h
+    return h
+  end
+  
+  def initial_seating_rows
+    h = Hash.new
+    User.included.shuffle.each_with_index{|u, i| h[u.id] = i / 4 } # 1. ４人テーブルだと思って分割する
+    return h
   end
   
   def plan_seating_impl(h, priorities)
-    best = h
-
-    excluded_ids = User.excluded.collect{|u| u.id }
-    pairs = priorities.select{|pair, score| score > 0 and (pair & excluded_ids).empty? }.sort{|a, b| a[1] <=> b[1] }.map{|pair, score| pair }
-    satisfied, unsatisfied = pairs.partition{|pair| sametable?(h, pair[0], pair[1]) }
+    p_user, p_topic, p_done = priorities
+    pairs = p_user.merge(p_topic){|_,v1,v2| [v1, v2].max }.sort_by{|pair, v| -v }.map{|pair, v| pair }
+    unsatisfied = pairs.reject{|u1,u2| sametable?(h, u1, u2) }
     
     until unsatisfied.empty?
-      best, max, improved = h, total_priority(satisfied, priorities), false
+      best, max, improved = h, total_priority(h, priorities), false
 
-      unsatisfied.shuffle.each{|pair|
-        # 希望に従って入れ替える
-        u1, u2 = pair[0], pair[1]
-        if not sametable?(h, u1, u2)
-          users1 = h.select{|u, table| table == h[u1] && u != u1 }.map{|u, _| u } # u1 と同じテーブルの人々
-          users2 = h.select{|u, table| table == h[u2] && u != u2 }.map{|u, _| u } # u2 と同じテーブルの人々
-          
-          if wantedscore(u1, users1, priorities) > wantedscore(u2, users2, priorities) # 元の部屋にそのままいる方が良い方を残す
-            swap(h, u2, users1.min{|u| wantedscore(u, users1, priorities) })
-          else
-            swap(h, u1, users2.min{|u| wantedscore(u, users2, priorities) })
+      unsatisfied.shuffle.each{|u1, u2|
+        next if sametable?(h, u1, u2)
+        prevh = h.clone
+
+        users1 = users_together(h, u1)
+        users2 = users_together(h, u2)
+        
+        next if users1.empty? && users2.empty?
+        
+        if wantedscore(u1, users1, priorities) > wantedscore(u2, users2, priorities) # 元の部屋にそのままいる方が良い方を残す
+          unless users1.empty?
+            temp_users = users1 + [u2]
+            swap(h, u2, users1.max{|u| table_priority(temp_users - [u], priorities) }) #u2 が users1 の誰か (u1以外) と入れ替わる
+          end
+        else
+          unless users2.empty?
+            temp_users = users2 + [u1]
+            swap(h, u1, users2.max{|u| table_priority(temp_users - [u], priorities) }) # u1 が users2 の誰か (u2以外) と入れ替わる
           end
         end
         
         # 入れ替え結果を評価する
-        score = total_priority(pairs.select{|pair| sametable?(h, pair[0], pair[1])}, priorities)
-        (best, max, improved = h.clone, score, true) if score > max
+        score = total_priority(h, priorities)
+        if score > max
+          best, max, improved = h.clone, score, true
+        else
+          h = prevh
+        end
       }
 
-      satisfied, unsatisfied = pairs.partition{|pair| sametable?(best, pair[0], pair[1]) }
-      if improved then
+      unsatisfied = pairs.reject{|u1, u2| sametable?(best, u1, u2) }
+      if improved 
         h = best
-      else
+      else 
         break # 改善が見られなかったら、全ての希望を満たしていなくても探索終了
-      end
+      end 
     end
 
-    [best,  total_priority(pairs.select{|pair| sametable?(best, pair[0], pair[1])}, priorities)]
+    return best,  total_priority(best, priorities)
   end
   
   def save_seatings(groups)
@@ -147,21 +156,49 @@ class Event < ActiveRecord::Base
   #########################################################
   # Seat planning helper methods
   #########################################################
-    
-  def sametable?(h, u1, u2)
-    h[u1] == h[u2]
+
+  def sametable?(h, user1, user2)
+    h[user1] == h[user2]
+  end
+  
+  # user と同じテーブルにいるユーザ全員 (user を除く)
+  def users_together(h, user)
+    h.select{|u, table| table == h[user] && user != u }.map{|u, _| u }
   end
 
-  def total_priority(pairs, priorities)
-    pairs.inject(0){|sum, pair| sum + priorities[pair.sort] }
+  # u1 と u2 が同じテーブルに着いた場合の評価値
+  def pair_priority(u1, u2, priorities)
+    pair = [u1, u2].sort
+    priorities.map{|p| p[pair] }.reduce(:+)
   end
   
+  # あるテーブルの合計評価値 (users: 同じテーブルに着いたユーザ)
+  def table_priority(users, priorities)
+    return 0 unless users.length > 1
+    p_user, p_topic, p_done = priorities
+    too_satisfied = Hash.new(0)
+    users.permutation(2).group_by{|u1, u2| u1 }.each{|u, pairs|
+      too_satisfied[u] = pairs.count{|pair| p_user.include?(pair.sort) } > 4 # 人希望が叶いすぎているのはダメ！
+    }
+    users.combination(2).map{|u1, u2|
+      key = [u1, u2].sort
+      p_topic[key] + p_done[key] + ((too_satisfied[u1] || too_satisfied[u2]) ? 0 : p_user[key])
+    }.reduce(:+)
+  end
+  
+  # 決めた席全体の合計評価値
+  def total_priority(h, priorities)
+    h.group_by{|u, t| t}.map{|table, users| table_priority(users.map{|u,t| u}, priorities) }.reduce(:+)
+  end
+  
+  # user が users の中にいることの評価値
   def wantedscore(user, users, priorities)
-    users.inject(0){|result, u| result + priorities[[u, user].sort] }
+    users.length > 0 ? users.map{|u| pair_priority(u, user, priorities) }.reduce(:+) : 0
   end
   
+  # used in plan_seating_rows
   def tables_matching(users1, users2, priorities)
-    users1.product(users2).inject(0){|sum, us| sum + priorities[us.sort] }
+    users1.product(users2).map{|u1,u2| pair_priority(u1,u2, priorities) }.reduce(:+)
   end
 
   def swap(h, u1, u2)

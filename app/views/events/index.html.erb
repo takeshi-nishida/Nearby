@@ -13,7 +13,7 @@
   <h2>希望を登録する</h2>
   
   <div class="wantform">
-  <%= form_tag want_events_path, class: "" do -%>
+  <%= form_tag want_events_path, id: "want_people" do -%>
     <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#narrowdown">絞り込む</button>
     <%= select :want, :who_id, grouped_options_for_select(@grouped_users, current_user.id), {}, id: "select_who", class: "who" %> さんと
     <%= select :want, :wantable_id, grouped_options_for_select(@grouped_users), {}, id: "select_wantable", class: "who" %>　さんが
@@ -87,7 +87,7 @@
     </p>
     <table id="wishlist">
     <% current_user.wants.each{|want| -%>
-      <tr><td><%= human_readable_want(want) %></td><td><%= button_to "やっぱりやめる", user_want_path(current_user, want), method: "delete", confirm: "本当に？" %></td></tr>
+      <tr><td><%= human_readable_want(want) %></td><td><%= button_to "やっぱりやめる", user_want_path(current_user, want), method: "delete", confirm: "本当にやめますか？" %></td></tr>
     <% } -%>
     </table>
 <% else -%>

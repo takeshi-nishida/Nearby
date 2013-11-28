@@ -51,10 +51,7 @@ class EventsController < ApplicationController
   
   def plan
     @event = Event.find(params[:id])
-    unless @event.planned?
-      @priorities = Want.priorities
-      @event.plan_seating(@priorities)
-    end
+    @event.plan_seating(Want.priorities) unless @event.planned?
     redirect_to :admin_index
   end
   

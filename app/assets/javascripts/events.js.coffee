@@ -22,6 +22,11 @@ $ ->
     $("#select_affiliations").val("")
     $("#select_types").val("")
 
+  $("#want_people").submit (e) =>
+    af1 = $("#select_who option:selected").parent().get(0)
+    af2 = $("#select_wantable option:selected").parent().get(0)
+    return $(af1).attr("label") isnt $(af2).attr("label") || confirm("その２人は同じ所属ですが、本当に希望しますか？")
+
 AddLabelToOption = (o) ->
   switch o.data("participation_type")
     when "発表者" then o.prepend("☆")

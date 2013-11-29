@@ -24,6 +24,7 @@ Nearby::Application.routes.draw do
   match "admin_index" => "events#admin_index", :as => :admin_index
   match "login" => "sessions#create", :as => :login
   match "logout" => "sessions#destroy", :as => :logout
+  match "about" => "events#about.html", :as => :about
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

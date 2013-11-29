@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  attr_accessible :name, :affiliation, :furigana, :password, :password_confirmation
+  attr_accessible :name, :email, :affiliation, :furigana, :category, :sex, :password, :password_confirmation
   has_secure_password
   validates :password, presence: true, on: :create
   
@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
   
   def self.grouped_options_by_affiliation
     g = all.group_by{|u| u.affiliation }
-    g.each{|k, us| g[k] = us.map{|u| [u.name, u.id, "data-participation_type" => [ "発表者", "デモ・ポスター発表", "PCメンバー", "学生ボランティア", "参加のみ" ].sample ] } } 
+    g.each{|k, us| g[k] = us.map{|u| [u.name, u.id, "data-category" => u.category ] } } 
   end
   
   def self.grouped_options_by_furigana

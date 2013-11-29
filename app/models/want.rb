@@ -82,6 +82,7 @@ class Want < ActiveRecord::Base
   
   private
   def cannot_want_yourself
+    errors.add(:wantable) if wantable == nil
     errors.add(:wantable, "Two persons cannot be the same.") if who == wantable
   end
 end

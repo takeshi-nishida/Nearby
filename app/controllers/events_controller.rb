@@ -67,9 +67,10 @@ class EventsController < ApplicationController
     
     if @want.save
     else
+      flash[:alert] = "無効な希望です"
+      flash.keep
     end
-    
-    redirect_to root_url
+      redirect_to root_url
   end
   
   def want_topic

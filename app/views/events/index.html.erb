@@ -1,22 +1,28 @@
-<h2>システム趣旨説明と手順</h2>
+<h2>システム趣旨説明</h2>
 <p>
-  WISS 2013では、「○○さんと話したい」などの希望をみなさんに入力してもらい、それを基にして夕食の座席を決める実験的な試みを行うことになりました。
-  ご利用の手順：
+  WISS 2013では、「○○さんと話したい」などの希望をみなさんに入力してもらい、それを基にして夕食の座席を決める試みを昨年に引き続き行うことになりました。
+  <%= link_to "詳細説明＆よくある質問", :about  %>
 </p>
+<h2>利用手順</h2>
 <ol>
-  <%= content_tag "li", "ログインする (メールでお知らせしたパスワードをご利用ください。ユーザ登録は不要です)", class: current_user ? "text-muted" : "alert-info" %>
+  <%= content_tag "li", "ログインする (ユーザ登録は不要です)", class: current_user ? "text-muted" : "alert-success" %>
   <%= content_tag "li", "希望を入力する", class: current_user ? "alert-success": "" %>
-  <li>当日、席次表を受け取り、夕食の際に確認のうえ着席する</li>
+  <li>当日、夕食の際に、席次表を確認のうえ着席する</li>
 </ol>
 
 <% if current_user %>
   <h2>希望を登録する</h2>
+  <%= content_tag "p", flash[:alert], class: "alert alert-warning" if flash[:alert] %>
   
-  <div class="wantform">
+  <div class="well well-want">
+    <div class="btn-group">
+      <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#narrowdown">絞り込む</button>
+      <button class="btn btn-default btn-xs" id="cancel_narrowdown_button1">解除</button>
+    </div>
+    ☆:登壇 ○:デモ・ポスター □:PC委員
   <%= form_tag want_events_path, id: "want_people" do -%>
-    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#narrowdown">絞り込む</button>
     <%= select :want, :who_id, grouped_options_for_select(@grouped_users, current_user.id), {}, id: "select_who", class: "who" %> さんと
-    <%= select :want, :wantable_id, grouped_options_for_select(@grouped_users), {}, id: "select_wantable", class: "who" %>　さんが
+    <%= select :want, :wantable_id, grouped_options_for_select(@grouped_users, nil, "選択されていません"), {}, id: "select_wantable", class: "who" %>　さんが
     <%= submit_tag "近くの席になれたらいいな" %>
     <%#= collection_select :want, :who_id, @users, :id, :name, selected: current_user.id %>
     <%#*<button class="btn btn-default btn-xs">絞り込む&gt;</button>%>
@@ -37,21 +43,23 @@
         </div>
         <div class="modal-body">
           <div class="form-group"><label>参加形態</label>
-            <select multiple id="select_types" class="form-control"><%= options_for_select participation_types %></select>
+            <select multiple id="select_types" size="5" class="form-control"><%= options_for_select participation_types %></select>
           </div>
           <div class="form-group"><label>所属</label>
-            <select multiple id="select_affiliations" class="form-control"><%= options_for_select @affiliations %></select>
+            <select multiple id="select_affiliations" size="8" class="form-control"><%= options_for_select @affiliations %></select>
           </div>
         </div>
         <div class="modal-footer">
-          <button id="showall_button" class="btn btn-default" data-dismiss="modal">絞り込みを解除</button>
+          <button id="cancel_narrowdown_button2" class="btn btn-default cancel_narrow_down" data-dismiss="modal">絞り込みを解除する</button>
           <button id="narrowdown_button" class="btn btn-primary" data-dismiss="modal">絞り込む</button>
         </div>
       </div>
     </div>
   </div>
+  
+  <select id="select_clone" style="display: none"></select>
 
-  <div class="wantform">
+  <div class="well well-want">
   <%= form_tag want_topic_events_path do -%>
     <%= collection_select :want, :wantable_id, @topics, :id, :description %>
     の<%= submit_tag "話がしたい" %>
@@ -64,7 +72,7 @@
     </p>
   </div>
   
-  <div class="excludeform">
+  <div class="well well-exclude">
     <%=  form_tag update_exclude_events_path do -%>
       <%= check_box_tag :exclude, true, current_user.exclude %>
       <%= label_tag(:exclude, "自分の席は自分で決めたい") %>
@@ -78,7 +86,7 @@
   
     <h2>あなたが登録した希望</h2>
     <% if current_user.exclude %>
-    <p>
+    <p class="text-warning">
       ※現在、「自分の席は自分で決めたい」が設定されています。自分に関する希望は登録できますが、考慮されません。（それ以外の希望は考慮されます。）
     </p>
     <% end %>
@@ -90,20 +98,31 @@
       <tr><td><%= human_readable_want(want) %></td><td><%= button_to "やっぱりやめる", user_want_path(current_user, want), method: "delete", confirm: "本当にやめますか？" %></td></tr>
     <% } -%>
     </table>
-<% else -%>
-    <p>希望を登録するにはログインしてください。</p>
-    <%= form_tag login_path do -%>
-      名前: <%#= select_tag :user_id, options_from_collection_for_select(@users, :id, :name_with_affiliation), include_blank: true %>
-      <%= select_tag :user_id, grouped_options_for_select(@grouped_users), prompt: "名前を選択してください", id: "select_user" %>
-      パスワード: <%= password_field_tag :password %>
-      <%= submit_tag "ログイン" %>
+<% end -%>
+    
+<% unless current_user %>
+    <h2>ログイン</h2>
+    <%= form_tag login_path, id: "login" do -%>
+    <div class="form-group">
+      <%= label_tag :email, "メールアドレス" %>
+      <%= email_field_tag :email, nil, placeholder: "案内メールが届いたメールアドレスを入力してください", class: "form-control" %>
+      <%#= select_tag :user_id, grouped_options_for_select(@grouped_users), prompt: "名前を選択してください", id: "select_user" %>
+    </div>
+    <div class="form-group">
+      <%= label_tag :password, "パスワード" %>
+      <%= password_field_tag :password, nil, placeholder: "案内メールに記載のパスワードを入力してください", class: "form-control" %>
+    </div>
+      <%= submit_tag "ログイン", class: "btn btn-default" %>
     <% end -%>
 <% end -%>
-
+ 
 <h2>夕食一覧</h2>
+<p>座席が決定するとこちらから確認することができるようになります。</p>
+<ul class="list-inline">
 <% @events.each{|e| -%>
-  <%= link_to e.description, event_path(e)  %>
+  <li><%= link_to e.description, event_path(e)  %></li>
 <% } -%>
+</ul>
 
 <div class="footer">
 <%= link_to "管理者用", admin_index_path %>

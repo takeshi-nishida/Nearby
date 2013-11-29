@@ -99,6 +99,7 @@ class Event < ActiveRecord::Base
   end
   
   def plan_seating_impl(h, priorities)
+    best = h
     p_user, p_topic, p_done = priorities
     pairs = p_user.merge(p_topic){|_,v1,v2| [v1, v2].max }.sort_by{|pair, v| -v }.map{|pair, v| pair }
     unsatisfied = pairs.reject{|u1,u2| sametable?(h, u1, u2) }

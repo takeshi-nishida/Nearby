@@ -1,8 +1,10 @@
 <h1>ユーザ一括登録</h1>
 
 <%= form_tag import_csv_users_path, multipart: true do -%>
-  CSVファイル <%= file_field_tag "csv", accept: "csv" %>
-  <%= submit_tag "送信" %>
+<div class="form-group">
+  <label>CSVファイル</label><%= file_field_tag "csv", accept: "csv" %>
+</div>
+  <%= submit_tag "送信", class: "btn btn-default" %>
 <% end -%>
 
 <% @users.each{|user| %>

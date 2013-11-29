@@ -46,11 +46,13 @@ class UsersController < ApplicationController
     CSV.parse(s, headers: true) do |row|
       @user = User.new(
         name: row["name"],
+        email: row["email"],
         password: row["password"],
         password_confirmation: row["password_confirmation"],
         furigana: row["furigana"],
         affiliation: row["affiliation"],
-        type: row["type"]
+        category: row["category"],
+        sex: row["sex"].to_i
       )
       @user.save
     end

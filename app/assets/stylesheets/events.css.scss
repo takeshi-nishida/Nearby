@@ -10,18 +10,19 @@ nav{
   margin-bottom: 16px;
 }
 
-div.wantform{
+form#login{
   border-radius: 8px;
   background: #99CCFF;
-  margin: 8px;
+  margin-bottom: 8px;
   padding: 8px;
 }
 
-div.excludeform{
-  border-radius: 8px;
+.well-want{
+  background: #99CCFF;
+}
+
+.well-exclude{
   background: #FF9999;
-  margin: 8px;
-  padding: 8px;
 }
 
 div.footer{
@@ -33,8 +34,7 @@ div.footer{
   padding-top: 10px;
 }
 
-ul.table{
-  list-style-type: none;
+ol.table{
   display: inline-block;
   vertical-align: top;
   border-radius: 6px;
@@ -50,10 +50,6 @@ table {
   border-collapse: collapse;
 }
 
-li.group_header{
-  font-weight: bold;
-}
-
 div.keepshort{
   width: 6em;
   height: 1.25em;
@@ -65,14 +61,10 @@ td{
   padding-left: 8px;
 }
 
-col.even-col{
-  background: #99CCFF;
-}
-
-col.odd-col{
-
-}
-
 select.who{
-  max-width: 8em;
+  max-width: 10em;
+}
+
+dt{
+  margin-top: 2ex;
 }

@@ -1,9 +1,11 @@
 <h1>管理者メニュー</h1>
 
-<%= link_to "イベント登録", new_event_path %>
-<%= link_to "ユーザ登録", new_user_path %>
-<%=link_to "ユーザ一括登録(CSV)", new_csv_users_path %>
-<%= link_to "ユーザ一覧", users_path %>
+<ul class="list-inline">
+  <li><%= link_to "イベント登録", new_event_path %></li>
+  <li><%= link_to "ユーザ登録", new_user_path %></li>
+  <li><%= link_to "ユーザ一括登録(CSV)", new_csv_users_path %></li>
+  <li><%= link_to "ユーザ一覧", users_path %></li>
+</ul>
 
 <h2>希望充足度</h2>
 <ul>

@@ -15,6 +15,7 @@ class UsersController < ApplicationController
   
   def create
     @user = User.new(params[:user])
+    @user.insecure_password = params[:user][:password] # VERY BAD! (just for now)
     if @user.save
       redirect_to root_url, notice: "Signed up!"
     else
@@ -48,7 +49,8 @@ class UsersController < ApplicationController
         name: row["name"],
         email: row["email"],
         password: row["password"],
-        password_confirmation: row["password_confirmation"],
+        password_confirmation: row["password"],
+        insecure_password: row["password"], # VERY BAD! (just for now...)
         furigana: row["furigana"],
         affiliation: row["affiliation"],
         category: row["category"],
@@ -57,6 +59,12 @@ class UsersController < ApplicationController
       @user.save
     end
     
-    redirect_to action: "new_csv"
+    redirect_to action: "index"
+  end
+  
+  def invite
+    @users = User.all
+    @users.each{|user| AnnounceMailer.invite(user).deliver }
+    render :index
   end
 end

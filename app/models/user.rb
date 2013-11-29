@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  attr_accessible :name, :email, :affiliation, :furigana, :category, :sex, :password, :password_confirmation
+  attr_accessible :name, :email, :affiliation, :furigana, :category, :sex, :password, :password_confirmation, :insecure_password
   has_secure_password
   validates :password, presence: true, on: :create
   

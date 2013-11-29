@@ -53,13 +53,14 @@ ActiveRecord::Schema.define(:version => 20120925120754) do
     t.string   "name"
     t.string   "email"
     t.string   "password_digest"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.string   "insecure_password"
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
     t.string   "affiliation"
     t.string   "category"
     t.string   "furigana"
     t.integer  "sex"
-    t.boolean  "exclude",         :default => false
+    t.boolean  "exclude",           :default => false
   end
 
   create_table "wants", :force => true do |t|

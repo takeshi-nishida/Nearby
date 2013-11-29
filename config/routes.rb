@@ -6,6 +6,7 @@ Nearby::Application.routes.draw do
     collection do
       get "new_csv"
       post "import_csv"
+      post "invite"
     end
   end
 
@@ -24,7 +25,7 @@ Nearby::Application.routes.draw do
   match "admin_index" => "events#admin_index", :as => :admin_index
   match "login" => "sessions#create", :as => :login
   match "logout" => "sessions#destroy", :as => :logout
-  match "about" => "events#about.html", :as => :about
+  match "about" => "events#about", :as => :about
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

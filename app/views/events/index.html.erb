@@ -10,9 +10,25 @@
   <li>当日、夕食の際に、席次表を確認のうえ着席する</li>
 </ol>
 
+<%= content_tag "p", flash[:alert], class: "alert alert-warning" if flash[:alert] %>
+
 <% if current_user %>
+    <h2>あなたが登録した希望</h2>
+    <% if current_user.exclude %>
+    <p class="text-warning">
+      ※現在、「自分の席は自分で決めたい」が設定されています。自分に関する希望は登録できますが、考慮されません。（それ以外の希望は考慮されます。）
+    </p>
+    <% end %>
+    <p><%= current_user.wants.count %>件の希望が登録されています
+      <%#*<button onclick="$('#wishlist').show()">希望の一覧を表示する</button>%>
+    </p>
+    <table id="wishlist">
+    <% current_user.wants.each{|want| -%>
+      <tr><td><%= human_readable_want(want) %></td><td><%= button_to "やっぱりやめる", user_want_path(current_user, want), method: "delete", confirm: "本当にやめますか？" %></td></tr>
+    <% } -%>
+    </table>
+    
   <h2>希望を登録する</h2>
-  <%= content_tag "p", flash[:alert], class: "alert alert-warning" if flash[:alert] %>
   
   <div class="well well-want">
     <div class="btn-group">
@@ -84,24 +100,12 @@
     </p>
   </div>
   
-    <h2>あなたが登録した希望</h2>
-    <% if current_user.exclude %>
-    <p class="text-warning">
-      ※現在、「自分の席は自分で決めたい」が設定されています。自分に関する希望は登録できますが、考慮されません。（それ以外の希望は考慮されます。）
-    </p>
-    <% end %>
-    <p><%= current_user.wants.count %>件の希望が登録されています
-      <%#*<button onclick="$('#wishlist').show()">希望の一覧を表示する</button>%>
-    </p>
-    <table id="wishlist">
-    <% current_user.wants.each{|want| -%>
-      <tr><td><%= human_readable_want(want) %></td><td><%= button_to "やっぱりやめる", user_want_path(current_user, want), method: "delete", confirm: "本当にやめますか？" %></td></tr>
-    <% } -%>
-    </table>
+
 <% end -%>
     
 <% unless current_user %>
     <h2>ログイン</h2>
+    
     <%= form_tag login_path, id: "login" do -%>
     <div class="form-group">
       <%= label_tag :email, "メールアドレス" %>

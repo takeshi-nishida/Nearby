@@ -5,13 +5,11 @@ gem 'rails', '3.2.11'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-group :development, :test do
-  gem 'sqlite3'
-  gem 'mongrel', '>= 1.2.0.pre2'
-end
+gem 'thin'
+gem 'pg' 
+
 group :production do
-  gem 'pg' 
-  gem 'thin'
+  gem 'rails_12factor'
 end
 
 # Gems used only for assets and not required
@@ -27,9 +25,11 @@ group :assets do
 end
 
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 
 # To use ActiveModel has_secure_password
  gem 'bcrypt-ruby', '~> 3.0.0'
+ 
 
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'
@@ -42,3 +42,5 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'ruby-debug19', :require => 'ruby-debug'
+
+ruby '2.0.0'

@@ -42,7 +42,7 @@ class UsersController < ApplicationController
     require 'kconv'
     
     s = params[:csv].read
-    s.force_encoding("Shift_JIS")
+#    s.force_encoding("Shift_JIS")
 
     CSV.parse(s, headers: true) do |row|
       @user = User.new(

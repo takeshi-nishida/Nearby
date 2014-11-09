@@ -1,24 +1,23 @@
 <h1>管理者メニュー</h1>
 
 <ul class="list-inline">
-  <li><%= link_to "イベント登録", new_event_path %></li>
-  <li><%= link_to "ユーザ登録", new_user_path %></li>
-  <li><%= link_to "ユーザ一括登録(CSV)", new_csv_users_path %></li>
-  <li><%= link_to "ユーザ一覧", users_path %></li>
+  <li><%= link_to 'イベント登録', new_event_path %></li>
+  <li><%= link_to 'ユーザ登録', new_user_path %></li>
+  <li><%= link_to 'ユーザ一括登録(CSV)', new_csv_users_path %></li>
+  <li><%= link_to 'ユーザ一覧', users_path %></li>
 </ul>
 
 <h2>希望充足度</h2>
 <ul>
-  <li>席決め対象人数: <%= @included_users.length %> / <%= User.count %></li>
+  <li>席決め対象人数: <%= User.included.count %> / <%= User.count %></li>
   <li>
-    希望のかなった人数: <%= @user_with_wants.select{|u| u.satisfied? }.size %> / <%= @user_with_wants.size  %>
-    (うち <%= @user_with_wants.select{|u| u.impossible?}.size %> 人は満たせる希望がない)
+    希望のかなった人数: <%= User.with_wants.select{|u| u.satisfied? }.size %> / <%= User.with_wants.size  %>
+    (うち <%= User.with_wants.select{|u| u.impossible?}.size %> 人は満たせる希望がない)
   </li>
-  <li>自分で自分の席を決めたいを選んだ人数: <%= @excluded_users.length %></li>
+  <li>自分で自分の席を決めたいを選んだ人数: <%= User.excluded.count %></li>
   <li>全希望:<%= @wants.count{|w| w.satisfied? }%> / <%= @wants.length %> (うち<%= @wants.count{|w| w.impossible?} %>満たせない)</li>
   <li>人希望: <%= Want.for_user.select{|w| w.satisfied? }.size %> / <%= Want.for_user.count %> (うち<%= Want.for_user.select{|w| w.impossible? }.size %>満たせない)</li>
   <li>話題希望: <%= Want.for_topic.select{|w| w.satisfied? }.size %> / <%= Want.for_topic.count %> (うち<%= Want.for_topic.select{|w| w.impossible? }.size %>満たせない)</li>
-  </li>
 </ul>
 
 <h2>イベント一覧</h2>
@@ -29,9 +28,9 @@
   <tr>
     <td><%=  link_to event.description, event_path(event) %></td>
     <td><%= event_details(event) %></td>
-    <td><%= satisfied.select{|w| w.wantable_type == "User" }.size %> 個</td>
+    <td><%= satisfied.select{|w| w.wantable_type == 'User' }.size %> 個</td>
     <td><%= plan_button_for(event) %></td>
-    <td><%= button_to "削除", event_path(event), method: "delete", confirm: "Are you sure?" %></td>
+    <td><%= button_to '削除', event_path(event), method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
 <% end -%>
 </table>
@@ -44,11 +43,11 @@
 </ul>
 
 <h2>希望満足状況の詳細</h2>
-<% User.all.reject{|u| u.wants.empty? }.each{|u| %>
-<h3><%= u.name %><%= "○" if u.satisfied? %><%= " ※自由席希望" if u.exclude %></h3>
+<% User.with_wants.each{|u| %>
+<h3><%= u.name %><%= '○' if u.satisfied? %><%= ' ※自由席希望' if u.exclude %></h3>
 <ul>
   <% u.wants.each{|w| -%>
-  <li><%= w.satisfied? ? "○" : (w.impossible? ? "▼" : "×") %><%= human_readable_want(w) %></li>
+  <li><%= status_mark(w) %><%= human_readable_want(w) %></li>
   <% } -%>
 </ul>
 <% } %>

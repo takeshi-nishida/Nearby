@@ -13,12 +13,12 @@ class Event < ActiveRecord::Base
   def partition(wants)
     wants.partition{|w|
       case w.wantable_type
-      when "User"
+      when 'User'
 #        s1 = seatings.find_by_user_id(w.who.id)
 #        s2 = seatings.find_by_user_id(w.wantable.id)
 #        s1 && s2 && s1.table == s2.table
         tables.any?{|table| (table.users & [w.who, w.wantable]).size == 2 }
-      when "Topic"
+      when 'Topic'
         tables.any?{|table| table.popular_topics.include?(w.wantable) }
       end
     }
@@ -31,15 +31,18 @@ class Event < ActiveRecord::Base
 
   # このイベントで自由席になったユーザのリストを返す
   def excluded_users
-    User.all - users
+#    User.all - users
+    users.where(exclude: true)
   end
-  
+
   def plan_seating(priorities)
-    case style
-    when "tables"
-      plan_seating_tables(priorities)
-    when "rows"
-      plan_seating_rows(priorities)
+    unless planned?
+      case style
+        when 'tables'
+          plan_seating_tables(priorities)
+        when 'rows'
+          plan_seating_rows(priorities)
+      end
     end
   end
 
@@ -89,13 +92,13 @@ class Event < ActiveRecord::Base
 #    users = User.included.sort_by{|u| u.popularity } # 希望されていない順に並べる（人気者が size2 の方に入るように　size2 > size1 と仮定）
     users.take(sn1).each_with_index{|u, i| h[u.id] = i % number1 }
     users.drop(sn1).each_with_index{|u, i| h[u.id] = i % number2 + number1 }
-    return h
+    h
   end
   
   def initial_seating_rows
     h = Hash.new
     User.included.shuffle.each_with_index{|u, i| h[u.id] = i / 4 } # 1. ４人テーブルだと思って分割する
-    return h
+    h
   end
   
   def plan_seating_impl(h, priorities)
@@ -214,17 +217,17 @@ class Event < ActiveRecord::Base
 
   def has_enough_seats
     if size1 * number1 + size2 * number2 < User.count
-      errors.add(:size1, "not enough seats compared to participants")
-      errors.add(:size2, "not enough seats compared to participants")
-      errors.add(:number1, "not enough seats compared to participants")
-      errors.add(:number2, "not enough seats compared to participants")
+      errors.add(:size1, 'not enough seats compared to participants')
+      errors.add(:size2, 'not enough seats compared to participants')
+      errors.add(:number1, 'not enough seats compared to participants')
+      errors.add(:number2, 'not enough seats compared to participants')
     end
   end
   
   def rows_should_be_even
-    if style == "rows" then
-      errors.add(:size1, "row size has to be even") if size1 % 2 != 0
-      errors.add(:number1, "row number has to be even") if number1 % 2 != 0
+    if style == 'rows'
+      errors.add(:size1, 'row size has to be even') if size1 % 2 != 0
+      errors.add(:number1, 'row number has to be even') if number1 % 2 != 0
     end
   end
 end

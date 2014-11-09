@@ -1,9 +1,9 @@
 class WantsController < ApplicationController
-  before_filter :current_user, only: [:destroy]
-  before_filter :require_user
+  before_action :current_user, only: [:destroy]
+  before_action :require_user
 
   def destroy
-    if @user == current_user then
+    if @user == current_user
       @want = @user.wants.find(params[:id])
       @user.wants.delete(@want)
     end

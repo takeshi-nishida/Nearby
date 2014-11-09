@@ -4,28 +4,28 @@ Nearby::Application.routes.draw do
   resources :users do
     resources :wants
     collection do
-      get "new_csv"
-      post "import_csv"
-      post "invite"
+      get 'new_csv'
+      post 'import_csv'
+      post 'invite'
     end
   end
 
   resources :events do
     member do
-      post "plan"
-      post "forget"
+      post 'plan'
+      post 'forget'
     end
     collection do
-      post "want"
-      post "want_topic"
-      post "update_exclude"
+      post 'want'
+      post 'want_topic'
+      post 'update_exclude'
     end
   end
 
-  match "admin_index" => "events#admin_index", :as => :admin_index
-  match "login" => "sessions#create", :as => :login
-  match "logout" => "sessions#destroy", :as => :logout
-  match "about" => "events#about", :as => :about
+  get 'admin_index' => 'events#admin_index', :as => :admin_index
+  post 'login' => 'sessions#create', :as => :login
+  get 'logout' => 'sessions#destroy', :as => :logout
+  get 'about' => 'events#about', :as => :about
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

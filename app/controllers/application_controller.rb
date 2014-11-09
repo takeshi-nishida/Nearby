@@ -1,8 +1,9 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   
-  force_ssl
-  
+  force_ssl if: :ssl_configured?
+
+
   private
 
   def current_user
@@ -15,4 +16,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
 
+  def ssl_configured?
+    !Rails.env.development?
+  end
 end

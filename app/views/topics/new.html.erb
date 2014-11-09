@@ -2,13 +2,13 @@
 
 <%= form_for @topic do |f| %>
   <div class="form-group">
-    <%= f.text_field :description %> について <%= f.submit "話すべき！" %>
+    <%= f.text_field :description %> について <%= f.submit '話すべき！' %>
   </div>
 <% end %>
 
 <% unless @topics.empty?  -%>
-  <p>（参考）提案済みの話題: <%= @topics.collect{|t| t.description }.join "," %></p>
+  <p>（参考）提案済みの話題: <%= @topics.collect{|t| t.description }.join ',' %></p>
 <% end -%>
 
 <p>※話題を提案するだけでは希望したことにはなりません（他の人におすすめの話題を登録してもOK）</p>
-<%= link_to "トップに戻る", root_url %>
+<%= link_to 'トップに戻る', root_url %>

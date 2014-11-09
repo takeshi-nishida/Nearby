@@ -1,11 +1,16 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
-  user: 
-  who: 
-  wantable: 
+  user: alice
+  who: alice
+  wantable: bob(User)
 
 two:
-  user: 
-  who: 
-  wantable: 
+  user: charlie
+  who: charlie
+  wantable: topic1(Topic)
+
+three:
+  user: david
+  who: david
+  wantable: topic1(Topic)

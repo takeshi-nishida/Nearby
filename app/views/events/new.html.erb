@@ -2,12 +2,12 @@
 
 <%= form_for @event do |f| -%>
 <div class="form-group">
-  <%= f.label :description, "イベントの名称" %>
-  <%= f.text_field :description, class: "form-control" %>
+  <%= f.label :description, 'イベントの名称' %>
+  <%= f.text_field :description, class: 'form-control' %>
 </div>
 <div class="form-group">
   <h2>座席レイアウトの設定</h2>
-  <%= f.radio_button(:style, "tables") %>テーブル席  <%= f.radio_button(:style, "rows") %>お座敷<br/>
+  <%= f.radio_button(:style, 'tables') %>テーブル席  <%= f.radio_button(:style, 'rows') %>お座敷<br/>
 </div>
 <div class="form-group">
   <h2>座席数の設定</h2>
@@ -15,5 +15,5 @@
   テーブル (or 列) 種類2: <%= f.text_field :size2, size: 3 %>人 &times; <%= f.text_field :number2, size: 3 %>個<br />
   <strong>※合計 <%= User.count %> 人分の座席があるように設定してください</strong>
 </div>
-  <%= f.submit "登録", class: "btn btn-default" %>
+  <%= f.submit '登録', class: 'btn btn-default' %>
 <% end -%>

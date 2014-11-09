@@ -2,9 +2,9 @@
 
 <%= form_tag import_csv_users_path, multipart: true do -%>
 <div class="form-group">
-  <label>CSVファイル</label><%= file_field_tag "csv", accept: "csv" %>
+  <label>CSVファイル</label><%= file_field_tag 'csv', accept: 'csv' %>
 </div>
-  <%= submit_tag "送信", class: "btn btn-default" %>
+  <%= submit_tag '送信', class: 'btn btn-default' %>
 <% end -%>
 
 <% @users.each{|user| %>

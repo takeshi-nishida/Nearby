@@ -27,9 +27,8 @@ form#login{
 
 div.footer{
   font-size: x-small;
-  border-style: solid;
-  border-color: black;
-  border-width: 1px 0px 0px 0px;
+  border: 0px solid black;
+  border-top-width: 1px;
   margin-top: 40px;
   padding-top: 10px;
 }

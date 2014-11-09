@@ -3,8 +3,8 @@
 module EventsHelper
   
   def event_details(e)
-    h1 = {"tables" => "テーブル席", "rows" => "座敷"}
-    h2 = {"tables" => "個", "rows" => "列"}
+    h1 = { tables: 'テーブル席', rows: '座敷'}
+    h2 = { tables: '個', rows: '列'}
     s = "#{h1[e.style]} ("
     s << "#{e.size1}人 × #{e.number1}#{h2[e.style]}" if e.number1 > 0
     s << " + #{e.size2}人 × #{e.number2}#{h2[e.style]}" if e.number2 > 0
@@ -13,9 +13,9 @@ module EventsHelper
 
   def human_readable_want(w)
     case w.wantable_type
-    when "User"
+    when 'User'
       "#{w.who.name} さんが #{w.wantable.name} さんが近くの席になれたらいいな"
-    when "Topic"
+    when 'Topic'
       "#{w.wantable.description if w.wantable} の話がしたい"
     end
   rescue
@@ -23,15 +23,15 @@ module EventsHelper
   end
         
   def plan_button_for(event)
-    if event.planned? then
-      button_to "決めた席をなかったことにする", forget_event_path(event)
+    if event.planned?
+      button_to '決めた席をなかったことにする', forget_event_path(event)
     else
-      button_to "席を決める", plan_event_path(event)
+      button_to '席を決める', plan_event_path(event)
     end
   end
   
   def zasiki_style_name(i)
-    i / 2 % 2 == 0 ? "even-col" : "odd-col"
+    i / 2 % 2 == 0 ? 'even-col' : 'odd-col'
   end
 
   # 4人分割の配列から座敷用の列を生成する
@@ -58,5 +58,13 @@ module EventsHelper
   # 配列 a の長さを n に揃える（不足分は nil で埋める）
   def fill_to(a, n)
     a.length < n ? a + [nil] * (n - a.length) : a
+  end
+
+  def status_mark(w)
+    if w.satisfied?
+      '○'
+    else
+      w.impossible? ? '▼' : '×'
+    end
   end
 end

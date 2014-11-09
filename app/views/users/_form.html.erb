@@ -3,26 +3,26 @@
     <div class="error_messages">
       <h2>Form is invalid</h2>
       <ul>
-        <% for message in @user.errors.full_messages %>
+        <% @user.errors.full_messages.each {|message| %>
           <li><%= message %></li>
-        <% end %>
+        <% } %>
       </ul>
     </div>
   <% end %>
 
 <div class="form-group">
   <%= f.label :name %>
-  <%= f.text_field :name, required: true, class: "form-control" %>
+  <%= f.text_field :name, required: true, class: 'form-control' %>
 </div>
 
 <div class="form-group">
   <%= f.label :email %>
-  <%= f.email_field :email, required: true, class: "form-control" %>
+  <%= f.email_field :email, required: true, class: 'form-control' %>
 </div>
 
 <div class="form-group">
   <%= f.label :affiliation %>
-  <%= f.text_field :affiliation, required: true, class: "form-control" %>
+  <%= f.text_field :affiliation, required: true, class: 'form-control' %>
 </div>
 
 <div class="form-group">
@@ -32,17 +32,17 @@
 
 <div class="form-group">
   <%= f.label :category %>
-  <%= f.select :category, participation_types, { }, class: "form-control" %>
+  <%= f.select :category, participation_types, { }, class: 'form-control' %>
 </div>
 
 <div class="form-group">
   <%= f.label :password %>
-  <%= f.password_field :password, required: true, class: "form-control" %>
+  <%= f.password_field :password, required: true, class: 'form-control' %>
 </div>
 
 <div class="form-group">
   <%= f.label :password_confirmation %>
-  <%= f.password_field :password_confirmation, required: true, class: "form-control" %>
+  <%= f.password_field :password_confirmation, required: true, class: 'form-control' %>
 </div>
-<%= f.submit "登録", class: "btn btn-default" %>
+<%= f.submit '登録', class: 'btn btn-default' %>
 <% end %>

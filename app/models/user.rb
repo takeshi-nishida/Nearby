@@ -1,10 +1,10 @@
 class User < ActiveRecord::Base
-  attr_accessible :name, :email, :affiliation, :furigana, :category, :sex, :password, :password_confirmation, :insecure_password
+#  attr_accessible :name, :email, :affiliation, :furigana, :category, :sex, :password, :password_confirmation, :insecure_password
   has_secure_password
   validates :password, presence: true, on: :create
   
-  scope :excluded, where(exclude: true)
-  scope :included, where(exclude: false)
+  scope :excluded, -> { where exclude: true }
+  scope :included, -> { where exclude: false }
   
   has_many :wants, :dependent => :destroy
   has_many :wanted, as: :wantable
@@ -13,6 +13,10 @@ class User < ActiveRecord::Base
   has_many :tables, :through => :seatings
   
   has_many :topics
+
+  def self.with_wants
+    all.reject{|u| u.wants.empty? }
+  end
   
   def self.for_select
     all.map{|u| [u.name, u.id]  }.group_by { |u| u[0].length }
@@ -20,7 +24,7 @@ class User < ActiveRecord::Base
   
   def self.grouped_options_by_affiliation
     g = all.group_by{|u| u.affiliation }
-    g.each{|k, us| g[k] = us.map{|u| [u.name, u.id, "data-category" => u.category ] } } 
+    g.each{|k, us| g[k] = us.map{|u| [u.name, u.id, 'data-category' => u.category ] } }
   end
   
   def self.grouped_options_by_furigana
@@ -33,11 +37,11 @@ class User < ActiveRecord::Base
   end
   
   def topics
-    wants.select{|w| w.wantable_type == "Topic" }.map{|w| w.wantable }
+    wants.select{|w| w.wantable_type == 'Topic' }.map{|w| w.wantable }
   end
   
   def popularity
-    Want.where(wantable_type: "User", wantable_id: self.id).count
+    Want.where(wantable_type: 'User', wantable_id: self.id).count
   end
   
   # 重いので注意

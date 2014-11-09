@@ -1,16 +1,16 @@
 <h2>システム趣旨説明</h2>
 <p>
   WISS 2013では、「○○さんと話したい」などの希望をみなさんに入力してもらい、それを基にして夕食の座席を決める試みを昨年に引き続き行うことになりました。
-  <%= link_to "詳細説明＆よくある質問", :about  %>
+  <%= link_to '詳細説明＆よくある質問', :about  %>
 </p>
 <h2>利用手順</h2>
 <ol>
-  <%= content_tag "li", "ログインする (ユーザ登録は不要です)", class: current_user ? "text-muted" : "alert-success" %>
-  <%= content_tag "li", "希望を入力する", class: current_user ? "alert-success": "" %>
+  <%= content_tag 'li', 'ログインする (ユーザ登録は不要です)', class: current_user ? 'text-muted' : 'alert-success' %>
+  <%= content_tag 'li', '希望を入力する', class: current_user ? 'alert-success' : '' %>
   <li>当日、夕食の際に、席次表を確認のうえ着席する</li>
 </ol>
 
-<%= content_tag "p", flash[:alert], class: "alert alert-warning" if flash[:alert] %>
+<%= content_tag 'p', flash['alert'], class: 'alert alert-warning' if flash['alert'] %>
 
 <% if current_user %>
     <h2>あなたが登録した希望</h2>
@@ -24,7 +24,10 @@
     </p>
     <table id="wishlist">
     <% current_user.wants.each{|want| -%>
-      <tr><td><%= human_readable_want(want) %></td><td><%= button_to "やっぱりやめる", user_want_path(current_user, want), method: "delete", confirm: "本当にやめますか？" %></td></tr>
+      <tr>
+        <td><%= human_readable_want(want) %></td>
+        <td><%= button_to 'やっぱりやめる', user_want_path(current_user, want), method: :delete, data: { confirm: '本当にやめますか？' } %></td>
+      </tr>
     <% } -%>
     </table>
     
@@ -36,10 +39,10 @@
       <button class="btn btn-default btn-xs" id="cancel_narrowdown_button1">解除</button>
     </div>
     ☆:登壇 ○:デモ・ポスター □:PC委員
-  <%= form_tag want_events_path, id: "want_people" do -%>
-    <%= select :want, :who_id, grouped_options_for_select(@grouped_users, current_user.id), {}, id: "select_who", class: "who" %> さんと
-    <%= select :want, :wantable_id, grouped_options_for_select(@grouped_users, nil, "選択されていません"), {}, id: "select_wantable", class: "who" %>　さんが
-    <%= submit_tag "近くの席になれたらいいな" %>
+  <%= form_tag want_events_path, id: 'want_people' do -%>
+    <%= select :want, :who_id, grouped_options_for_select(@grouped_users, current_user.id), {}, id: 'select_who', class: 'who' %> さんと
+    <%= select :want, :wantable_id, grouped_options_for_select(@grouped_users, nil, prompt: '選択されていません'), {}, id: 'select_wantable', class: 'who' %>　さんが
+    <%= submit_tag '近くの席になれたらいいな' %>
     <%#= collection_select :want, :who_id, @users, :id, :name, selected: current_user.id %>
     <%#*<button class="btn btn-default btn-xs">絞り込む&gt;</button>%>
     <%#= collection_select :want, :wantable_id, @users, :id, :name %>
@@ -78,21 +81,21 @@
   <div class="well well-want">
   <%= form_tag want_topic_events_path do -%>
     <%= collection_select :want, :wantable_id, @topics, :id, :description %>
-    の<%= submit_tag "話がしたい" %>
-    <%= link_to "他の話題を提案する", new_topic_url %>
+    の<%= submit_tag '話がしたい' %>
+    <%= link_to '他の話題を提案する', new_topic_url %>
   <% end -%>
     <p class="help-block">
       特に希望の相手は思い当たらない人向けにはこちら。<br />
       同じ話題を希望している人どうしは近くの席になりやすくなります。<br/>
-      自分の研究テーマを<%= link_to "話題として追加", new_topic_url %>してみてもいいかも？
+      自分の研究テーマを<%= link_to '話題として追加', new_topic_url %>してみてもいいかも？
     </p>
   </div>
   
   <div class="well well-exclude">
     <%=  form_tag update_exclude_events_path do -%>
       <%= check_box_tag :exclude, true, current_user.exclude %>
-      <%= label_tag(:exclude, "自分の席は自分で決めたい") %>
-      <%= submit_tag "更新" %>
+      <%= label_tag(:exclude, '自分の席は自分で決めたい') %>
+      <%= submit_tag '更新' %>
     <% end -%>
     <p class="help-block">
       他の人の席を決めた後残った席の中から、当日自由に席を決めていただけます。<br/>
@@ -106,17 +109,17 @@
 <% unless current_user %>
     <h2>ログイン</h2>
     
-    <%= form_tag login_path, id: "login" do -%>
+    <%= form_tag login_path, id: 'login' do -%>
     <div class="form-group">
-      <%= label_tag :email, "メールアドレス" %>
-      <%= email_field_tag :email, nil, placeholder: "案内メールが届いたメールアドレスを入力してください", class: "form-control" %>
+      <%= label_tag :email, 'メールアドレス' %>
+      <%= email_field_tag :email, nil, placeholder: '案内メールが届いたメールアドレスを入力してください', class: 'form-control' %>
       <%#= select_tag :user_id, grouped_options_for_select(@grouped_users), prompt: "名前を選択してください", id: "select_user" %>
     </div>
     <div class="form-group">
-      <%= label_tag :password, "パスワード" %>
-      <%= password_field_tag :password, nil, placeholder: "案内メールに記載のパスワードを入力してください", class: "form-control" %>
+      <%= label_tag :password, 'パスワード' %>
+      <%= password_field_tag :password, nil, placeholder: '案内メールに記載のパスワードを入力してください', class: 'form-control' %>
     </div>
-      <%= submit_tag "ログイン", class: "btn btn-default" %>
+      <%= submit_tag 'ログイン', class: 'btn btn-default' %>
     <% end -%>
 <% end -%>
  
@@ -129,5 +132,5 @@
 </ul>
 
 <div class="footer">
-<%= link_to "管理者用", admin_index_path %>
+<%= link_to '管理者用', admin_index_path %>
 </div>

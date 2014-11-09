@@ -3,7 +3,7 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 $ ->
-  $("option[data-category]").each () ->　AddLabelToOption($(this))
+  $("option[data-category]").each () -> AddLabelToOption($(this))
   
   $("#narrowdown_button").click (e) => DoNarrowDown()
 

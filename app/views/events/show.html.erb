@@ -15,16 +15,16 @@
 
 <% if @event.planned? -%>
   <% case @event.style %>
-  <% when "tables" %>
-    <%= render :partial => "tables", :locals => { :event => @event } %>
-  <% when "rows" %>
-    <%= render :partial => "rows", :locals => { :event => @event } %>
+  <% when 'tables' %>
+    <%= render :partial => 'tables', :locals => { :event => @event } %>
+  <% when 'rows' %>
+    <%= render :partial => 'rows', :locals => { :event => @event } %>
   <% end %>
 
-  <% unless @excluded_users.empty? %>
+  <% unless @event.users.exists?(exclude: true) %>
     <h2>自由席の人</h2>
     <ul class="list-inline">
-      <% @excluded_users.each do |u| -%>
+      <% @event.users.where(exclude: true).each do |u| -%>
         <li><%= u.name %></li>
       <% end -%>  
     </ul>

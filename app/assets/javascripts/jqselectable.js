@@ -9,7 +9,8 @@
  *
  * 2012-04-10 19:50
  */
-;(function($, window, document, undefined) {
+;//noinspection ThisExpressionReferencesGlobalObjectJS
+(function($, window, document, undefined) {
 
   // jQselectable
   var jQselectableIds = {};

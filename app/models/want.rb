@@ -1,19 +1,22 @@
 class Want < ActiveRecord::Base
   belongs_to :user
-  belongs_to :who, class_name: "User"
+  belongs_to :who, class_name: 'User'
   belongs_to :wantable, :polymorphic => true
   
   validates_associated :user, :who, :wantable
 #  validates :wantable, :uniqueness => { :scope =>  [:user, :who], :message => "no duplication." }
   validate :cannot_want_yourself
   
-  scope :for_user, where(wantable_type: "User")
-  scope :for_topic, where(wantable_type: "Topic")
+  scope :for_user, -> { where wantable_type: 'User' }
+  scope :for_topic, -> { where wantable_type: 'Topic' }
   
   def priority
     # 本人による希望を優先する。１つも希望がかなっていない人の希望を優先する。
-    user == who || user == wantable ? (user.satisfied? ? 4 : 6) : 1
-#      user == who || user == wantable ? 2 : 1
+    if user == who || user == wantable then
+      user.satisfied? ? 4 : 6
+    else
+      1
+    end
   end
   
 # どちらかが「自分で自分の席を決めたい」を希望している場合は、残念ながらその希望はかなえられない
@@ -25,11 +28,11 @@ class Want < ActiveRecord::Base
   def satisfied?
 #    tables = Event.all.map{|e| e.tables }.flatten
     case wantable_type
-    when "User"
+    when 'User'
       # who が属するテーブルに wantable が存在
       who.tables.any?{|table| table.users.include?(wantable) }
 #      tables.any?{|table| (table.users & [who, wantable]).size == 2 }
-    when "Topic"
+    when 'Topic'
       # user が続するテーブルに wantable を希望している人が存在する
       who.tables.any?{|table|
         table.users.any?{|u| user != u and u.topics.include?(wantable) }
@@ -41,9 +44,9 @@ class Want < ActiveRecord::Base
   # 絶対に叶えられない希望かどうか
   def impossible?
     case wantable_type
-    when "User"
+    when 'User'
       who.exclude or wantable.exclude
-    when "Topic"
+    when 'Topic'
       who.exclude or wantable.wants.size < 2
     end
   end
@@ -54,7 +57,7 @@ class Want < ActiveRecord::Base
     # 1. 人希望
     h1 = Hash.new(0)
     for_user.reject{|w| w.impossible? }.each{|w|
-      key = [w.who.id, w.wantable.id].sort;
+      key = [w.who.id, w.wantable.id].sort
       p = w.priority
       h1[key] = p if p > h1[key]
     }
@@ -83,6 +86,6 @@ class Want < ActiveRecord::Base
   private
   def cannot_want_yourself
     errors.add(:wantable) if wantable == nil
-    errors.add(:wantable, "Two persons cannot be the same.") if who == wantable
+    errors.add(:wantable, 'Two persons cannot be the same.') if who == wantable
   end
 end

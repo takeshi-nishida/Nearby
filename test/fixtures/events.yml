@@ -1,7 +1,17 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-one:
-  groupsize: 1
+tables:
+  description:
+  style: tables
+  size1: 4
+  number1: 10
+  size2: 0
+  number2: 0
 
-two:
-  groupsize: 1
+rows:
+  description:
+  style: rows
+  size1: 10
+  number1: 4
+  size2: 0
+  number2: 0

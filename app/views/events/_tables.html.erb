@@ -6,13 +6,13 @@
           <%= i + 1 %>番テーブル<br>
           <small>
             <% table.popular_topics.each{|t| %>
-              <%= content_tag "span", t.description, class: "label label-default" %>
+              <%= content_tag 'span', t.description, class: 'label label-default' %>
               <% } %>
             </small>
           </div>
           <div class="panel-body">
             <ol>
-              <% table.users.each_with_index{|u, i| -%>
+              <% table.users.each_with_index{|u, _| -%>
                 <li><%= u.name %></li>
               <% } -%>
             </ol>
@@ -20,4 +20,4 @@
         </div>
       </div>
     <% } %>
-    <div>
+    </div>

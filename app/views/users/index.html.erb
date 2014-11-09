@@ -1,11 +1,11 @@
 <div>
-  <%= button_to "招待メール送信", invite_users_path, class: "btn btn-default" %>
+  <%= button_to '招待メール送信', invite_users_path, class: 'btn btn-default' %>
 </div>
 
 <h1>ユーザ一覧</h1>
 
   <ul>
-    <% User.find_each{|u|  -%>
-      <li><%= u.wants.count %>: <%= link_to u.name, user_path(u)  %> (<%= u.furigana %>) <%= u.email %> <%= link_to "編集する", edit_user_path(u) %></li>
+    <% @users.each{|u|  -%>
+      <li><%= u.wants.count %>: <%= link_to u.name, user_path(u)  %> (<%= u.furigana %>) <%= u.email %> <%= link_to '編集する', edit_user_path(u) %></li>
     <% } -%>
-  </li>
+  </ul>

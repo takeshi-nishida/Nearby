@@ -1,9 +1,55 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-one:
-  name: MyString
-  password_digest: MyString
+alice:
+  name: Alice
+  email: alice@test.com
+  password_digest: <%= BCrypt::Password.create("password") %>
+  affiliation: Kobe University
+  category: 登壇発表
+  furigana: アリス
+  sex: 1  # 0 = male, 1 = female
+  exclude: false
 
-two:
-  name: MyString
-  password_digest: MyString
+bob:
+  name: Bob
+  email: bob@test.com
+  password_digest: <%= BCrypt::Password.create("password") %>
+  affiliation: Kobe University
+  category: 登壇発表
+  furigana: ボブ
+  sex: 0  # 0 = male, 1 = female
+  exclude: false
+
+charlie:
+    name: Charlie
+    email: charlie@test.com
+    password_digest: <%= BCrypt::Password.create("password") %>
+    affiliation: Kobe University
+    category: 登壇発表
+    furigana: チャーリー
+    sex: 0  # 0 = male, 1 = female
+    exclude: false
+
+
+david:
+  name: David
+  email: david@test.com
+  password_digest: <%= BCrypt::Password.create("password") %>
+  affiliation: Kobe University
+  category: 登壇発表
+  furigana: デイビッド
+  sex: 0  # 0 = male, 1 = female
+  exclude: false
+
+
+<% 36.times { |i| %>
+user_<%= i %>:
+  name: user_<%= i %>
+  email: user_<%= i %>@test.com
+  password_digest: <%= BCrypt::Password.create("password") %>
+  affiliation: Kobe University
+  category: 登壇発表
+  furigana: ユーザー<%= i %>
+  sex: 0  # 0 = male, 1 = female
+  exclude: false
+<% } %>

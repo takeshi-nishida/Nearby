@@ -4,14 +4,30 @@ tables:
   description:
   style: tables
   size1: 4
-  number1: 10
+  number1: 46
   size2: 0
   number2: 0
 
 rows:
   description:
   style: rows
-  size1: 10
-  number1: 4
+  size1: 23
+  number1: 8
+  size2: 0
+  number2: 0
+
+zashiki1:
+  description: 1日目
+  style: zashiki
+  size1: 23
+  number1: 8
+  size2: 0
+  number2: 0
+
+zashiki2:
+  description: 2日目
+  style: zashiki
+  size1: 23
+  number1: 8
   size2: 0
   number2: 0

@@ -24,7 +24,7 @@ Nearby::Application.routes.draw do
 
   get 'admin_index' => 'events#admin_index', :as => :admin_index
   post 'login' => 'sessions#create', :as => :login
-  get 'logout' => 'sessions#destroy', :as => :logout
+  post 'logout' => 'sessions#destroy', :as => :logout
   get 'about' => 'events#about', :as => :about
 
   # The priority is based upon order of creation:

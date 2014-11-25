@@ -1,7 +1,7 @@
 <table class="rows">
     <col />
   <% event.number1.times{|i| -%>
-    <col class="<%= zasiki_style_name(i)  %>" />
+    <col class="<%= zashiki_style_name(i)  %>" />
   <% } -%>
   <tr>
     <th></th>
@@ -13,7 +13,7 @@
     <tr>
       <th><%=  i + 1 %></th>
       <% users.each{|u| %>
-      <td><div class="keepshort"><%= u ? u.name : '[空席]' %></div></td>
+      <td><div class="keep_short"><%= u ? u.name : '[空席]' %></div></td>
       <% } %>
     </tr>
   <% } -%>

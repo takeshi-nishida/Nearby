@@ -6,7 +6,7 @@ class EventsController < ApplicationController
   
   def index
     @events = Event.all
-    @users = User.all
+#    @users = User.all
     @topics = Topic.all
     @want = Want.new
     @grouped_users = User.grouped_options_by_affiliation
@@ -31,7 +31,7 @@ class EventsController < ApplicationController
   end
   
   def create
-    @event = Event.new(params[:event])
+    @event = Event.new(params.require(:event).permit(:description, :style, :size1, :number1, :size2, :number2))
     if @event.save
       redirect_to @event
     else

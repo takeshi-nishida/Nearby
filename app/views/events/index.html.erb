@@ -1,27 +1,47 @@
+<%= content_tag 'p', flash['alert'], class: 'alert alert-warning' if flash['alert'] %>
+
 <h2>システム趣旨説明</h2>
 <p>
-  WISS 2013では、「○○さんと話したい」などの希望をみなさんに入力してもらい、それを基にして夕食の座席を決める試みを昨年に引き続き行うことになりました。
-  <%= link_to '詳細説明＆よくある質問', :about  %>
+  「○○さんと話したい」などの希望をみなさんに入力していただき、それをもとに夕食の座席を決めるシステムです。今年で3回目。
+  <%= link_to '詳細＆FAQ', :about  %>
 </p>
+
+<div class="row three">
+<div class="col-sm-4">
 <h2>利用手順</h2>
 <ol>
-  <%= content_tag 'li', 'ログインする (ユーザ登録は不要です)', class: current_user ? 'text-muted' : 'alert-success' %>
+  <%= content_tag 'li', 'ログインする', class: current_user ? 'text-muted' : 'alert-success' %>
   <%= content_tag 'li', '希望を入力する', class: current_user ? 'alert-success' : '' %>
-  <li>当日、夕食の際に、席次表を確認のうえ着席する</li>
+  <li>夕食の際に、席次表を確認して着席する</li>
 </ol>
+</div>
 
-<%= content_tag 'p', flash['alert'], class: 'alert alert-warning' if flash['alert'] %>
+<div class="col-sm-4">
+<h2>席次表</h2>
+<ul class="list-inline">
+  <% @events.each{|e| -%>
+      <li><%= link_to e.description, event_path(e)  %></li>
+  <% } -%>
+</ul>
+</div>
+
+<div class="col-sm-4">
+<h2>みんなの希望</h2>
+<span class="xx-large"><%= User.all.count %></span> 人中 <span class="xx-large"><%= User.with_wants.count %></span> 人の参加者が合計で
+<span class="xx-large"><%= Want.all.count %></span> 個の希望を登録しています
+</div>
+
+</div>
+
 
 <% if current_user %>
     <h2>あなたが登録した希望</h2>
     <% if current_user.exclude %>
-    <p class="text-warning">
-      ※現在、「自分の席は自分で決めたい」が設定されています。自分に関する希望は登録できますが、考慮されません。（それ以外の希望は考慮されます。）
+    <p class="text-danger">
+      ※「席を決められたくない」が設定されています。希望を登録しても席決めの対象外になります。（ほかの人に関する希望は席決めで考慮されます。）<br/>
+      席決め対象になりたい場合は、下の方にあるチェックをオフにして更新ボタンを押してください。
     </p>
     <% end %>
-    <p><%= current_user.wants.count %>件の希望が登録されています
-      <%#*<button onclick="$('#wishlist').show()">希望の一覧を表示する</button>%>
-    </p>
     <table id="wishlist">
     <% current_user.wants.each{|want| -%>
       <tr>
@@ -30,15 +50,15 @@
       </tr>
     <% } -%>
     </table>
-    
-  <h2>希望を登録する</h2>
+
+    <h2>希望を登録する</h2>
   
   <div class="well well-want">
     <div class="btn-group">
       <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#narrowdown">絞り込む</button>
       <button class="btn btn-default btn-xs" id="cancel_narrowdown_button1">解除</button>
     </div>
-    ☆:登壇 ○:デモ・ポスター □:PC委員
+    <!--☆:登壇 ○:デモ・ポスター □:PC委員-->
   <%= form_tag want_events_path, id: 'want_people' do -%>
     <%= select :want, :who_id, grouped_options_for_select(@grouped_users, current_user.id), {}, id: 'select_who', class: 'who' %> さんと
     <%= select :want, :wantable_id, grouped_options_for_select(@grouped_users, nil, prompt: '選択されていません'), {}, id: 'select_wantable', class: 'who' %>　さんが
@@ -94,12 +114,11 @@
   <div class="well well-exclude">
     <%=  form_tag update_exclude_events_path do -%>
       <%= check_box_tag :exclude, true, current_user.exclude %>
-      <%= label_tag(:exclude, '自分の席は自分で決めたい') %>
+      <%= label_tag(:exclude, '席を決められたくない') %>
       <%= submit_tag '更新' %>
     <% end -%>
     <p class="help-block">
-      他の人の席を決めた後残った席の中から、当日自由に席を決めていただけます。<br/>
-      選択肢が非常に限られる可能性もありますのでご了承ください。
+      席決めの対象外になります。<br/>対象外の人数分、席が残りますので、そのどれかに座ってください。<br/>
     </p>
   </div>
   
@@ -123,13 +142,6 @@
     <% end -%>
 <% end -%>
  
-<h2>夕食一覧</h2>
-<p>座席が決定するとこちらから確認することができるようになります。</p>
-<ul class="list-inline">
-<% @events.each{|e| -%>
-  <li><%= link_to e.description, event_path(e)  %></li>
-<% } -%>
-</ul>
 
 <div class="footer">
 <%= link_to '管理者用', admin_index_path %>

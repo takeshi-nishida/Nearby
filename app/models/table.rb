@@ -1,6 +1,6 @@
 class Table < ActiveRecord::Base
   belongs_to :event
-  has_many :seatings
+  has_many :seatings, :dependent => :delete_all
   has_many :users, :through => :seatings
   
   def popular_topics

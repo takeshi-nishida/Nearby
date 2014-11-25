@@ -30,7 +30,7 @@ module EventsHelper
     end
   end
   
-  def zasiki_style_name(i)
+  def zashiki_style_name(i)
     i / 2 % 2 == 0 ? 'even-col' : 'odd-col'
   end
 
@@ -66,5 +66,27 @@ module EventsHelper
     else
       w.impossible? ? '▼' : '×'
     end
+  end
+
+  # 2人分割の配列から座敷用の列を生成する
+  def tables_to_zashiki(event)
+    # 1. 1人テーブルを2人にそろえる
+    a = event.tables.collect{|table| fill_to(table.users, 2) }
+
+    # 2. 座敷の席数に配列の長さを揃える
+    a = fill_to(a, event.size1 * event.number1 / 2)
+
+    # 3. 各ペアから1人を1行に、もう1人を次の行に入れる
+    b = Array.new
+    a.each_slice(event.number1).with_index{|slice, i|
+      if i < event.size1 / 2 then
+        b << slice.collect{|pair| pair ? pair[0] : nil }
+        b << slice.collect{|pair| pair ? pair[1] : nil }
+      else
+        b << slice.flatten
+      end
+    }
+
+    b
   end
 end

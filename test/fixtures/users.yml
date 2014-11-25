@@ -42,7 +42,7 @@ david:
   exclude: false
 
 
-<% 36.times { |i| %>
+<% 180.times { |i| %>
 user_<%= i %>:
   name: user_<%= i %>
   email: user_<%= i %>@test.com

@@ -5,7 +5,8 @@ class User < ActiveRecord::Base
   
   scope :excluded, -> { where exclude: true }
   scope :included, -> { where exclude: false }
-  
+  scope :with_wants, -> { joins(:wants).uniq }
+
   has_many :wants, :dependent => :destroy
   has_many :wanted, as: :wantable
 
@@ -14,10 +15,10 @@ class User < ActiveRecord::Base
   
   has_many :topics
 
-  def self.with_wants
-    all.reject{|u| u.wants.empty? }
-  end
-  
+#   def self.with_wants
+#     all.reject{|u| u.wants.empty? }
+#   end
+
   def self.for_select
     all.map{|u| [u.name, u.id]  }.group_by { |u| u[0].length }
   end

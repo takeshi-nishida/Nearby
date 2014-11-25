@@ -1,0 +1,26 @@
+<table class="rows">
+  <col />
+  <% event.number1.times{|i| -%>
+      <col class="<%= zashiki_style_name(i)  %>" />
+  <% } -%>
+
+  <thead>
+  <tr>
+    <th />
+    <% ('A'..'Z').first(event.number1).each{|a| -%>
+        <th><%= a  %></th>
+    <% } -%>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% tables_to_zashiki(event).each_with_index { |users, i| -%>
+      <tr>
+        <th><%= i + 1 %></th>
+        <% users.each{|u| -%>
+            <td><div class="keep_short"><%= u ? u.name : '[空席]' %></div></td>
+        <% } -%>
+      </tr>
+  <% } -%>
+  </tbody>
+</table>

@@ -45,11 +45,11 @@ ol.table{
 
 table {
   margin: 8px 8px 8px 8px;
-  border: 1px solid black;
+//  border: 1px solid black;
   border-collapse: collapse;
 }
 
-div.keepshort{
+div.keep_short {
   width: 6em;
   height: 1.25em;
   overflow: hidden;
@@ -66,4 +66,24 @@ select.who{
 
 dt{
   margin-top: 2ex;
+}
+
+span.xx-large{
+  font-size: x-large;
+  font-weight: bold;
+}
+
+col.even-col{
+  background: #99CCFF;
+}
+
+table.rows{
+  text-align: center;
+}
+
+table thead th{
+  text-align: center;
+}
+
+div.three div {
 }

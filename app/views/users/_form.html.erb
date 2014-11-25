@@ -44,5 +44,9 @@
   <%= f.label :password_confirmation %>
   <%= f.password_field :password_confirmation, required: true, class: 'form-control' %>
 </div>
+
+<div class="checkbox">
+  <label><%= f.check_box :exclude %> 席決め対象外にする</label>
+</div>
 <%= f.submit '登録', class: 'btn btn-default' %>
 <% end %>

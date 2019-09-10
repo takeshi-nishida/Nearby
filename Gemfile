@@ -37,4 +37,4 @@ gem 'bcrypt', '~> 3.1.7'
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 
-ruby '2.0.0'
+ruby '2.4.7'

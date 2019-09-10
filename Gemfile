@@ -1,8 +1,12 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.6'
+gem 'rails', '4.2.11.1'
 
 gem 'pg'
+
+group :development do
+  gem 'web-console', '~> 2.0'
+end
 
 group :production do
   gem 'rails_12factor'

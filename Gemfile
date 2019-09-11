@@ -2,7 +2,8 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.11.1'
 
-gem 'pg'
+# gem 'pg'
+gem 'pg', '~> 0.20.0'
 
 group :development do
   gem 'web-console', '~> 2.0'

@@ -53,6 +53,10 @@
     </table>
 
     <h2>希望を登録する</h2>
+  <p>
+    夕食のときに近くになりたい人がいる場合、引き合わせたい二人がいる場合は、すぐ下で登録できます。<br/>
+    特定の誰かは思い当たらないけどこういう話をしたいという希望はその下で話題を希望できます。<br/>
+  </p>
 
   <div class="well well-want">
     <div class="btn-group">
@@ -68,8 +72,7 @@
     <%#*<button class="btn btn-default btn-xs">絞り込む&gt;</button>%>
     <%#= collection_select :want, :wantable_id, @users, :id, :name %>
     <p class="help-block">
-      憧れのあの人に研究を売り込むチャンス？<br/>
-      自分が含まれていない希望を登録して、誰かを後押しすることもできます。
+      リストが長くて選びにくいので上の「絞り込み」も使ってみてください。
     </p>
   <% end -%>
   </div>
@@ -103,12 +106,12 @@
   <%= form_tag want_topic_events_path do -%>
     <%= collection_select :want, :wantable_id, @topics, :id, :description %>
     の<%= submit_tag '話がしたい' %>
-    <%= link_to '他の話題を提案する', new_topic_url %>
+    <%= link_to '他の話題をリストに追加する', new_topic_url %>
   <% end -%>
     <p class="help-block">
-      特に希望の相手は思い当たらない人向けにはこちら。<br />
       同じ話題を希望している人どうしは近くの席になりやすくなります。<br/>
-      自分の研究テーマを<%= link_to '話題として追加', new_topic_url %>してみてもいいかも？
+      自分の研究テーマを <%= link_to '話題としてリストに追加', new_topic_url %> してみてもいいかも？<br/>
+      話題を追加した後、話題を希望するのをお忘れなく。
     </p>
   </div>
 
@@ -119,7 +122,7 @@
       <%= submit_tag '更新' %>
     <% end -%>
     <p class="help-block">
-      席決めの対象外になります。<br/>対象外の人数分、席が残りますので、そのどれかに座ってください。<br/>
+      席決めの対象外になります。<br/>対象外に設定した人数の分、席が残りますので、そのどれかに座ってください。<br/>
     </p>
   </div>
 

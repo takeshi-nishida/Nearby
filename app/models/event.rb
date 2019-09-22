@@ -2,13 +2,13 @@ class Event < ActiveRecord::Base
   validate :has_enough_seats, :rows_should_be_even
 
   has_many :tables, :dependent => :delete_all
-  has_many :seatings, :through => :tables,  :dependent => :delete_all
+  has_many :seatings, :through => :tables#,  :dependent => :delete_all
   has_many :users, :through => :seatings
-  
+
   def planned?
     !tables.empty?
   end
-  
+
   # 重いので注意
   def partition(wants)
     wants.partition{|w|
@@ -23,7 +23,7 @@ class Event < ActiveRecord::Base
       end
     }
   end
-  
+
   def forget_seating
     tables.clear
 #    seatings.clear
@@ -62,7 +62,7 @@ class Event < ActiveRecord::Base
   #   best = best.group_by{|user, table| table }.values.sort_by{|table| table.size }
   #   save_seatings(best)
   # end
-  
+
   # def plan_seating_rows(priorities)
   #   plans = Array.new
   #   1.times{ plans << plan_seating_impl(initial_seating_rows, priorities) }
@@ -97,13 +97,13 @@ class Event < ActiveRecord::Base
 #     users.drop(sn1).each_with_index{|u, i| h[u.id] = i % number2 + number1 }
 #     h
 #   end
-  
+
   # def initial_seating_rows
   #   h = Hash.new
   #   User.included.shuffle.each_with_index{|u, i| h[u.id] = i / 4 } # 1. ４人テーブルだと思って分割する
   #   h
   # end
-  
+
   # def plan_seating_impl(h, priorities)
   #   best = h
   #   p_user, p_topic, p_done = priorities
@@ -153,13 +153,13 @@ class Event < ActiveRecord::Base
   #
   #   return best,  total_priority(best, priorities)
   # end
-  
+
   # def save_seatings(groups)
   #   groups.each{|us|
   #     tables.create(:user_ids => us.map{|u, t| u} )
   #   }
   # end
-  
+
   # #########################################################
   # # Seat planning helper methods
   # #########################################################
@@ -226,7 +226,7 @@ class Event < ActiveRecord::Base
       errors.add(:number2, 'not enough seats compared to participants')
     end
   end
-  
+
   def rows_should_be_even
     if style == 'rows'
       errors.add(:size1, 'row size has to be even') if size1 % 2 != 0

@@ -3,7 +3,7 @@ class AnnounceMailer < ActionMailer::Base
 
   def invite(user)
     @user = user
-    @host = 'wiss-dinner.herokuapp.com'
+    @host = 'https://wiss2019-dinner.herokuapp.com/'
 
     mail to: "#{@user.name} <#{@user.email}>", subject: 'WISS夕食席決めシステムのご案内'
   end

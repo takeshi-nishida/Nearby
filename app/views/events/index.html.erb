@@ -2,7 +2,8 @@
 
 <h2>システム趣旨説明</h2>
 <p>
-  「○○さんと話したい」などの希望をみなさんに入力していただき、それをもとに夕食の座席を決めるシステムです。今年で3回目。
+  「○○さんと話したい」などの希望をみなさんに入力していただき、それをもとに夕食の座席を決めるシステムです。
+  WISS2012, 2013, 2014 に運用されたシステムが5年ぶりの復活。
   <%= link_to '詳細＆FAQ', :about  %>
 </p>
 
@@ -52,7 +53,7 @@
     </table>
 
     <h2>希望を登録する</h2>
-  
+
   <div class="well well-want">
     <div class="btn-group">
       <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#narrowdown">絞り込む</button>
@@ -69,10 +70,10 @@
     <p class="help-block">
       憧れのあの人に研究を売り込むチャンス？<br/>
       自分が含まれていない希望を登録して、誰かを後押しすることもできます。
-    </p> 
+    </p>
   <% end -%>
   </div>
-  
+
     <div id="narrowdown" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -95,7 +96,7 @@
       </div>
     </div>
   </div>
-  
+
   <select id="select_clone" style="display: none"></select>
 
   <div class="well well-want">
@@ -110,7 +111,7 @@
       自分の研究テーマを<%= link_to '話題として追加', new_topic_url %>してみてもいいかも？
     </p>
   </div>
-  
+
   <div class="well well-exclude">
     <%=  form_tag update_exclude_events_path do -%>
       <%= check_box_tag :exclude, true, current_user.exclude %>
@@ -121,13 +122,13 @@
       席決めの対象外になります。<br/>対象外の人数分、席が残りますので、そのどれかに座ってください。<br/>
     </p>
   </div>
-  
+
 
 <% end -%>
-    
+
 <% unless current_user %>
     <h2>ログイン</h2>
-    
+
     <%= form_tag login_path, id: 'login' do -%>
     <div class="form-group">
       <%= label_tag :email, 'メールアドレス' %>
@@ -141,7 +142,7 @@
       <%= submit_tag 'ログイン', class: 'btn btn-default' %>
     <% end -%>
 <% end -%>
- 
+
 
 <div class="footer">
 <%= link_to '管理者用', admin_index_path %>

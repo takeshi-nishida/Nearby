@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   http_basic_authenticate_with :name => 'tnishida', :password => '3594t'
-  
+
   def index
     @users = User.all
   end
@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   def new
     @user = User.new
   end
-  
+
   def create
 #    @user = User.new(params[:user])
     @user = User.new(user_params)
@@ -23,26 +23,26 @@ class UsersController < ApplicationController
       render 'new'
     end
   end
-  
+
   def edit
     @user = User.find(params[:id])
   end
-  
+
   def update
     @user = User.find(params[:id])
     # @user.update(params[:user])
     @user.update(user_params)
     redirect_to @user
   end
-    
+
   def new_csv
     @users = User.all
   end
-  
+
   def import_csv
     require 'csv'
     require 'kconv'
-    
+
     s = params[:csv].read
 #    s.force_encoding("Shift_JIS")
 
@@ -60,13 +60,19 @@ class UsersController < ApplicationController
       )
       @user.save
     end
-    
+
     redirect_to action: 'index'
   end
-  
+
   def invite
     @users = User.all
     @users.each{|user| AnnounceMailer.invite(user).deliver }
+    render :index
+  end
+
+  def send_invite
+    @user = User.find(params[:id])
+    AnnounceMailer.invite(@user).deliver
     render :index
   end
 

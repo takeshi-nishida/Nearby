@@ -3,6 +3,9 @@ Nearby::Application.routes.draw do
 
   resources :users do
     resources :wants
+    member do
+      post 'send_invite'
+    end
     collection do
       get 'new_csv'
       post 'import_csv'

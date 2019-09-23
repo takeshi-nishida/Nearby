@@ -1,5 +1,5 @@
 class AnnounceMailer < ActionMailer::Base
-  default from: 'Takeshi NISHIDA <nishida@tsg.jp>'
+  default from: 'Takeshi NISHIDA <tnishida@people.kobe-u.ac.jp>'
 
   def invite(user)
     @user = user

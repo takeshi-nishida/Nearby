@@ -49,7 +49,16 @@ Nearby::Application.configure do
   # config.assets.precompile += %w( search.js )
 
   # Disable delivery errors, bad email addresses will be ignored
-  # config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.smtp_settings =
+  {
+      :user_name => ENV['MAILER_USER_ID'],
+      :password => ENV['MAILER_PASSWORD'],
+      :address => "smtp.gmail.com",
+      :port => 587,
+      :authentication => 'login',
+      :enable_starttls_auto => true
+  }
 
   # Enable threaded mode
   # config.threadsafe!

@@ -71,6 +71,7 @@ class UsersController < ApplicationController
   end
 
   def send_invite
+    @users = User.all
     @user = User.find(params[:id])
     AnnounceMailer.invite(@user).deliver
     render :index
